@@ -7,6 +7,8 @@
 #include <complex>
 #include <cmath>
 
+#include "time.hh"
+
 // SoA of complex numbers
 template< typename R >
 class Complexes {
@@ -82,10 +84,10 @@ int main( int argc, char * argv[] )
   long long degree = atoll(argv[3]) ;
   std::cout.precision(18) ;
 
-  if (precision=="half") main_impl<std::float16_t>(size,degree) ;
-  else if (precision=="float") main_impl<float>(size,degree) ;
-  else if (precision=="double") main_impl<double>(size,degree) ;
-  else if (precision=="long") main_impl<long double>(size,degree) ;
-  else if (precision=="quad") main_impl<std::float128_t>(size,degree) ;
+  if (precision=="half") time("main",main_impl<std::float16_t>,size,degree) ;
+  else if (precision=="float") time("main",main_impl<float>,size,degree) ;
+  else if (precision=="double") time("main",main_impl<double>,size,degree) ;
+  else if (precision=="long") time("main",main_impl<long double>,size,degree) ;
+  else if (precision=="quad") time("main",main_impl<std::float128_t>,size,degree) ;
   else throw "unknown precision" ;
  }
