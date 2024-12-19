@@ -12,8 +12,5 @@ shift
 prog=${1}
 shift
 
-which maqao
-
 rm -f tmp.${prog}.exe
-g++ --version
-g++ -g -fno-inline-small-functions -march=native -Wall -Wextra -Wfatal-errors -std=c++${std} -O${opt} ${prog}.cpp -o tmp.${prog}.exe
+g++ -g -march=native -mtune=native -Wall -Wextra -Wfatal-errors -std=c++${std} -O${opt} ${prog}.cpp -o tmp.${prog}.exe

@@ -6,6 +6,7 @@
 #include <stdfloat>
 #include <complex>
 #include <cmath>
+#include <format>
 
 #include "time.hh"
 
@@ -71,9 +72,9 @@ void main_impl( std::size_t size, long long degree )
  {
   std::complex<R> res = reduce(pow(random<R>(size),degree)) ;
   R re = res.real(), im = res.imag() ;
-  auto r = std::sqrt(static_cast<long double>(re*re+im*im)) ;
-  auto n = std::atan(static_cast<long double>(im/re)) ;
-  std::cout<<r<<" "<<n<<std::endl ;
+  auto r = std::sqrt((re*re+im*im)) ;
+  auto n = std::atan((im/re)) ;
+  std::cout<<std::format("{} {}",r,n)<<std::endl ;
  }
 
 int main( int argc, char * argv[] )

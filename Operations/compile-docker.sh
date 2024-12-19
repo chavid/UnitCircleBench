@@ -1,2 +1,2 @@
 #!/usr/bin/env bash
-docker run --rm -v "${PWD}":/work -w /work -it gcc:11.2.0 ./compile.sh $*
+docker run --rm -v "${PWD}":/work -w /work -it gcc:14.2 ./compile.sh $*

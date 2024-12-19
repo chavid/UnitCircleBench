@@ -13,4 +13,4 @@ for i in 0 1 2 3 4 5 6 7 8 9 ; do
   ( time ./tmp.${prog}.exe $* ) >> ./tmp.${prog}.log 2>&1
 done
 
-./mean-user-time.py ./tmp.${prog}.log $*
+./mean-user-time.py ./tmp.${prog}.log ${prog} $*

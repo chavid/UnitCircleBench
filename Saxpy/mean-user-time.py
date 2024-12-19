@@ -15,4 +15,4 @@ for line in file.readlines():
       mean_time += float(m.group(1))
       nb_match += 1
 
-print('{} {:0.2} s'.format(sys.argv[2:],mean_time/nb_match))
+print('{} {:0.2f} s'.format(sys.argv[2:],mean_time/nb_match))

@@ -1,6 +1,5 @@
 
----
-# Comparatif
+## Comparatif
 
 Divers comparatif sur les versions de gcc, les options -O0 -O2 -O3, les types de tableaux en AoS, et un SoA.
 Temps d'exécution pour 10000x100000, en secondes.
@@ -30,7 +29,7 @@ Tentatives d'explications
 * en `-O0`, tous les types de tableaux ne sont pas équivalent : on paie le surcout des appels de fonctions pour accéder aux éléments des tableaux, ce qui disparait en `-O2` ou ces appels sont éliminés.
 * `float` n'est pas plus rapide que `double` (hors effets de cache), car quoiqu'il arrive les données sont placées dans des registres matériels de taille `double` pour le calcul.
 * en AoS, l'option `-O3` bénéficie à `long double` et nuit à `float` et `double`, sans doute à cause d'une tentative contre-productive de vectorisation !
-* Clang ne souffre pas de ces travers de gcc sur l'AoS, et on dirati qu'il vectorise dès -O2.
+* Clang ne souffre pas de ces travers de gcc sur l'AoS, et on dirait qu'il vectorise dès -O2.
 * en SoA, les temps en `float` sont imbattables, et les temps en double ne s'améliorent pas ?!? VERIFIER AVEC GODBOLT
 * `std::valarray` est assimilable à un gsl::dyn_array, plus des opérateurs termes à termes.
 
@@ -41,8 +40,7 @@ En alternative aux flags -m, GCC (et seulement GCC, pas Clang ni ICC à ma conna
 Voilà la doc: https://gcc.gnu.org/onlinedocs/gcc/Function-Multiversioning.html
 
 
---
-# Essai en 1024*1,000,000
+## Essai en 1024*1,000,000
 
 Le choix de 1024 (ou 512) vise à tenir dans le cache L1, et à mieux voir les effets de la vectorisation. Ci-dessous, on a bien un facteur de l'ordre de 8 sur les float, et de l'ordre de 4 sur les double. Pour des tailles de tableau plus grandes, on soupconne que le programme devient IO-bound, c'est à dire limité par le début du cache L2 pour fournir les données.
 
@@ -52,8 +50,9 @@ gcc 10.2.0     |       0.9  |        0.9 |        3.6 ||       0.12 |       0.24
 
 
 
---
-# Reconnaitre soi-même les instructions vectorielles dans l'assembleur
+## Reconnaitre soi-même les instructions vectorielles dans l'assembleur
+
+A VOIR AVEC GODBOLT & "CUTTER"
 
 Addition et multiplication
 * 128 bits, SSE : `ADDPS`, `MULPS` XMM?
@@ -66,8 +65,7 @@ peut apparaitre l'opportunité de faire du FMA, et là les
 instructions seront plutôt de la forme `*MADD*`.
 
 
---
-# Un essai d'analyse de la vectorisation avec [Maqao](http://www.maqao.org/)
+## Un essai d'analyse de la vectorisation avec [Maqao](http://www.maqao.org/)
 
 Premiers problèmes rencontrés :
 * pas de binaire MacOS déjà fair pour maqao
@@ -80,3 +78,5 @@ La commande magique : `/opt/maqao.intel64.2.12.0/maqao.intel64 cqa /work/tmp.sax
 Mais :
 * en -O3, la fonction est en ligne, et maqao ne la trouve pas :'(
 * de toute façon le `for` n'est pas dans ma fonction, mais dans les opérateurs * et + de std::valarray...
+
+
