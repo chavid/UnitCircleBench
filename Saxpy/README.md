@@ -78,5 +78,3 @@ La commande magique : `/opt/maqao.intel64.2.12.0/maqao.intel64 cqa /work/tmp.sax
 Mais :
 * en -O3, la fonction est en ligne, et maqao ne la trouve pas :'(
 * de toute façon le `for` n'est pas dans ma fonction, mais dans les opérateurs * et + de std::valarray...
-
-

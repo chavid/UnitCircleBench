@@ -13,7 +13,7 @@ prog=${1}
 shift
 
 rm -f tmp.${prog}.exe
-g++ -g -march=native -mtune=native -Wall -Wextra -Wfatal-errors -std=c++${std} -O${opt} ${prog}.cpp -o tmp.${prog}.exe
+g++ -g -march=native -funroll-loops -Wall -Wextra -Wfatal-errors -std=c++${std} -O${opt} ${prog}.cpp -o tmp.${prog}.exe
 
 if [ $? -ne 0 ]; then
   echo G++ FAILED

@@ -1,6 +1,6 @@
 
 #include <iostream>
-#include <iomanip>
+#include <format>
 #include <cassert> // for assert
 #include <cstdlib> // for rand
 #include <valarray>
@@ -8,34 +8,8 @@
 #include <list>
 #include <vector>
 #include <stdfloat>
-#include <format>
 
-
-//================================================================
-// Utilities
-//================================================================
-
-template < typename T > class TypeDisplayer ;
-
-// Home-made array which is stored in the heap
-template< typename T >
-class DynArray
- {
-  public :
-    using value_type = T ;
-    explicit DynArray( std::size_t size ) : size_(size), data_(new T [size]) {}
-    T * begin() { return data_ ; }
-    T * end() { return data_+size_ ; }
-    T const * begin() const { return data_ ; }
-    T const * end() const { return data_+size_ ; }
-    std::size_t size() const { return size_ ; }
-    T & operator[]( std::size_t indice ) { return data_[indice] ; }
-    T const & operator[]( std::size_t indice ) const { return data_[indice] ; }
-    ~DynArray() { delete [] data_ ; }
-  private :
-    std::size_t size_ ;
-    T * data_ ;
- } ;
+#include "utilities.hh"
 
 
 //================================================================
@@ -45,10 +19,10 @@ class DynArray
 template< std::floating_point fp_t >
 struct XY
  {
-  using value_type = fp_t ;
+  using fp_type = fp_t ;
   XY()
    {
-    x = std::rand()/(RAND_MAX+static_cast<fp_t>(1.0))-static_cast<fp_t>(-0.5) ;
+    x = std::rand()/(RAND_MAX+static_cast<fp_t>(1.0))-static_cast<fp_t>(0.5) ;
     y = static_cast<fp_t>(0.) ;
    }
   fp_t x, y {} ;
@@ -60,8 +34,8 @@ template< typename Array >
 class AoS : public Array
  {
   public :
-    using xy = typename Array::value_type ;
-    using fp_type = typename xy::value_type ;
+    using value_type = typename Array::value_type ;
+    using fp_type = typename value_type::fp_type ;
     using Array::Array ;
     void saxpy( fp_type a )
      {
@@ -142,7 +116,7 @@ class SoaBase
      {
       for ( std::size_t i {} ; i < m_size ; ++i )
        {
-        xs[i] = std::rand()/(RAND_MAX+static_cast<fp_type>(1.0))-static_cast<fp_type>(-0.5) ;
+        xs[i] = std::rand()/(RAND_MAX+static_cast<fp_type>(1.0))-static_cast<fp_type>(0.5) ;
         ys[i] = static_cast<fp_type>(0.) ;
        }
      }
@@ -246,7 +220,7 @@ class SoA<std::list<fp_t>>
       auto ys = m_ys.begin() ;
       for ( ; xs != end ; ++xs, ++ys )
        {
-        (*xs) = std::rand()/(RAND_MAX+static_cast<fp_type>(1.0))-static_cast<fp_type>(-0.5) ;
+        (*xs) = std::rand()/(RAND_MAX+static_cast<fp_type>(1.0))-static_cast<fp_type>(0.5) ;
         (*ys) = static_cast<fp_type>(0.) ;
        }
      }
@@ -319,8 +293,8 @@ int main( int argc, char * argv[] )
   std::string arrangement_tname(argv[1]) ;
   std::string collection_tname(argv[2]) ;
   std::string fp_tname(argv[3]) ;
-  std::size_t size = atoi(argv[4]) ;
-  std::size_t repeat = atoi(argv[5]) ;
+  std::size_t size {std::strtoull(argv[4],nullptr,10)} ;
+  std::size_t repeat {std::strtoull(argv[5],nullptr,10)} ;
 
   if (arrangement_tname=="aos")
    {

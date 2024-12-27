@@ -1,0 +1,113 @@
+chavid/devcpp20:v14.2> ./compile-g++.sh 23 0 saxpy
+chavid/devcpp20:v14.2> ./run.sh saxpy aos carray double 1024 200000
+1.38 s,  3925 kBytes, 135.01070004187324
+chavid/devcpp20:v14.2> ./run.sh saxpy aos dynarray double 1024 200000
+1.58 s,  3928 kBytes, 135.01070004187324
+chavid/devcpp20:v14.2> ./run.sh saxpy aos array double 1024 200000
+1.65 s,  4919 kBytes, 135.01070004187324
+chavid/devcpp20:v14.2> ./run.sh saxpy aos valarray double 1024 200000
+1.60 s,  3920 kBytes, 135.01070004187324
+chavid/devcpp20:v14.2> ./run.sh saxpy aos vector double 1024 200000
+2.43 s,  3919 kBytes, 135.01070004187324
+chavid/devcpp20:v14.2> ./run.sh saxpy aos list double 1024 200000
+3.06 s,  3961 kBytes, 135.01070004187324
+chavid/devcpp20:v14.2> ./run.sh saxpy soa carray double 1024 200000
+0.84 s,  3898 kBytes, 135.01070004187324
+chavid/devcpp20:v14.2> ./run.sh saxpy soa dynarray double 1024 200000
+1.11 s,  3910 kBytes, 135.01070004187324
+chavid/devcpp20:v14.2> ./run.sh saxpy soa array double 1024 200000
+0.96 s,  3914 kBytes, 135.01070004187324
+chavid/devcpp20:v14.2> ./run.sh saxpy soa valarray double 1024 200000
+1.91 s,  3919 kBytes, 135.01070004187324
+chavid/devcpp20:v14.2> ./run.sh saxpy soa vector double 1024 200000
+1.11 s,  3903 kBytes, 135.01070004187324
+chavid/devcpp20:v14.2> ./run.sh saxpy soa list double 1024 200000
+6.04 s,  3976 kBytes, 135.01070004187324
+chavid/devcpp20:v14.2> ./compile-g++.sh 23 2 saxpy
+chavid/devcpp20:v14.2> ./run.sh saxpy aos carray double 1024 200000
+0.06 s,  3851 kBytes, 135.01070004187324
+chavid/devcpp20:v14.2> ./run.sh saxpy aos dynarray double 1024 200000
+0.06 s,  3845 kBytes, 135.01070004187324
+chavid/devcpp20:v14.2> ./run.sh saxpy aos array double 1024 200000
+0.06 s,  4846 kBytes, 135.01070004187324
+chavid/devcpp20:v14.2> ./run.sh saxpy aos valarray double 1024 200000
+0.06 s,  3841 kBytes, 135.01070004187324
+chavid/devcpp20:v14.2> ./run.sh saxpy aos vector double 1024 200000
+0.06 s,  3865 kBytes, 135.01070004187324
+chavid/devcpp20:v14.2> ./run.sh saxpy aos list double 1024 200000
+0.35 s,  3886 kBytes, 135.01070004187324
+chavid/devcpp20:v14.2> ./run.sh saxpy soa carray double 1024 200000
+0.07 s,  3863 kBytes, 135.01070004187324
+chavid/devcpp20:v14.2> ./run.sh saxpy soa dynarray double 1024 200000
+0.07 s,  3846 kBytes, 135.01070004187324
+chavid/devcpp20:v14.2> ./run.sh saxpy soa array double 1024 200000
+0.06 s,  3792 kBytes, 135.01070004187324
+chavid/devcpp20:v14.2> ./run.sh saxpy soa valarray double 1024 200000
+0.07 s,  3858 kBytes, 135.01070004187324
+chavid/devcpp20:v14.2> ./run.sh saxpy soa vector double 1024 200000
+0.07 s,  3807 kBytes, 135.01070004187324
+chavid/devcpp20:v14.2> ./run.sh saxpy soa list double 1024 200000
+0.27 s,  3837 kBytes, 135.01070004187324
+chavid/devcpp20:v14.2> ./compile-g++.sh 23 2 saxpy
+chavid/devcpp20:v14.2> ./run.sh saxpy aos carray double 1024 2000000
+0.60 s,  3843 kBytes, 1350.10700040206
+chavid/devcpp20:v14.2> ./run.sh saxpy aos dynarray double 1024 2000000
+0.59 s,  3865 kBytes, 1350.10700040206
+chavid/devcpp20:v14.2> ./run.sh saxpy aos array double 1024 2000000
+0.61 s,  4854 kBytes, 1350.10700040206
+chavid/devcpp20:v14.2> ./run.sh saxpy aos valarray double 1024 2000000
+0.60 s,  3845 kBytes, 1350.10700040206
+chavid/devcpp20:v14.2> ./run.sh saxpy aos vector double 1024 2000000
+0.59 s,  3836 kBytes, 1350.10700040206
+chavid/devcpp20:v14.2> ./run.sh saxpy soa carray double 1024 2000000
+0.75 s,  3860 kBytes, 1350.10700040206
+chavid/devcpp20:v14.2> ./run.sh saxpy soa dynarray double 1024 2000000
+0.75 s,  3856 kBytes, 1350.10700040206
+chavid/devcpp20:v14.2> ./run.sh saxpy soa array double 1024 2000000
+0.60 s,  3789 kBytes, 1350.10700040206
+chavid/devcpp20:v14.2> ./run.sh saxpy soa valarray double 1024 2000000
+0.74 s,  3845 kBytes, 1350.10700040206
+chavid/devcpp20:v14.2> ./run.sh saxpy soa vector double 1024 2000000
+0.74 s,  3811 kBytes, 1350.10700040206
+chavid/devcpp20:v14.2> ./compile-g++.sh 23 3 saxpy
+chavid/devcpp20:v14.2> ./run.sh saxpy aos carray double 1024 2000000
+0.62 s,  3882 kBytes, 1350.10700040206
+chavid/devcpp20:v14.2> ./run.sh saxpy aos dynarray double 1024 2000000
+0.62 s,  3864 kBytes, 1350.10700040206
+chavid/devcpp20:v14.2> ./run.sh saxpy aos array double 1024 2000000
+0.62 s,  4890 kBytes, 1350.10700040206
+chavid/devcpp20:v14.2> ./run.sh saxpy aos valarray double 1024 2000000
+0.62 s,  3865 kBytes, 1350.10700040206
+chavid/devcpp20:v14.2> ./run.sh saxpy aos vector double 1024 2000000
+0.63 s,  3862 kBytes, 1350.10700040206
+chavid/devcpp20:v14.2> ./run.sh saxpy soa carray double 1024 2000000
+0.21 s,  3880 kBytes, 1350.10700040206
+chavid/devcpp20:v14.2> ./run.sh saxpy soa dynarray double 1024 2000000
+0.21 s,  3886 kBytes, 1350.10700040206
+chavid/devcpp20:v14.2> ./run.sh saxpy soa array double 1024 2000000
+0.24 s,  3891 kBytes, 1350.10700040206
+chavid/devcpp20:v14.2> ./run.sh saxpy soa valarray double 1024 2000000
+0.21 s,  3878 kBytes, 1350.10700040206
+chavid/devcpp20:v14.2> ./run.sh saxpy soa vector double 1024 2000000
+0.22 s,  3826 kBytes, 1350.10700040206
+chavid/devcpp20:v14.2> ./compile-g++.sh 23 3 saxpy
+chavid/devcpp20:v14.2> ./run.sh saxpy aos carray double 65536 31250
+0.96 s,  4122 kBytes, -2.7891989723852095
+chavid/devcpp20:v14.2> ./run.sh saxpy aos dynarray double 65536 31250
+0.95 s,  4131 kBytes, -2.7891989723852095
+chavid/devcpp20:v14.2> ./run.sh saxpy aos array double 65536 31250
+0.94 s,  4874 kBytes, -2.7891989723852095
+chavid/devcpp20:v14.2> ./run.sh saxpy aos valarray double 65536 31250
+0.95 s,  4128 kBytes, -2.7891989723852095
+chavid/devcpp20:v14.2> ./run.sh saxpy aos vector double 65536 31250
+0.97 s,  4076 kBytes, -2.7891989723852095
+chavid/devcpp20:v14.2> ./run.sh saxpy soa carray double 65536 31250
+0.65 s,  4101 kBytes, -2.7891989723852095
+chavid/devcpp20:v14.2> ./run.sh saxpy soa dynarray double 65536 31250
+0.65 s,  4106 kBytes, -2.7891989723852095
+chavid/devcpp20:v14.2> ./run.sh saxpy soa array double 65536 31250
+0.65 s,  4867 kBytes, -2.7891989723852095
+chavid/devcpp20:v14.2> ./run.sh saxpy soa valarray double 65536 31250
+0.65 s,  4121 kBytes, -2.7891989723852095
+chavid/devcpp20:v14.2> ./run.sh saxpy soa vector double 65536 31250
+0.66 s,  4041 kBytes, -2.7891989723852095
