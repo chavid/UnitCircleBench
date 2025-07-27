@@ -1,0 +1,15 @@
+
+On voit le SIMD sur axpy avec std::array :
+- O2 aos double 1024 2000000 : 0.590 s
+- O2 soa double 1024 2000000 : 0.590 s
+- O3 aos double 1024 2000000 : 0.620 s
+- O3 soa double 1024 2000000 : 0.240 s
+
+Mais pas sur les complexes :
+- O2 aos float 1024 100000 : 0.200 s
+- O2 soa float 1024 100000 : 0.200 s
+- O3 aos float 1024 100000 : 0.190 s
+- O3 soa float 1024 100000 : 0.190 s
+- Of aos float 1024 100000 : 0.210 s
+- Of soa float 1024 100000 : 0.190 s
+

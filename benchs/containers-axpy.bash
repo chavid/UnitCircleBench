@@ -20,7 +20,7 @@ cpp20 run-with-times.py x11 axpy soa list     double 1024 200000
 
 # Same with -O2
 
-cpp20 ./compile.py g++ c++23 O2 axpy
+cpp20 compile.py g++ c++23 O2 axpy
 
 cpp20 run-with-times.py x11 axpy aos carray   double 1024 200000
 cpp20 run-with-times.py x11 axpy aos dynarray double 1024 200000
@@ -40,7 +40,7 @@ cpp20 run-with-times.py x11 axpy soa list     double 1024 200000
 # Move up to 1024*2000000
 # I remove std::list, too slow.
 
-cpp20 ./compile.py g++ c++23 O2 axpy
+cpp20 compile.py g++ c++23 O2 axpy
 
 cpp20 run-with-times.py x11 axpy aos carray   double 1024 2000000
 cpp20 run-with-times.py x11 axpy aos dynarray double 1024 2000000
@@ -56,7 +56,7 @@ cpp20 run-with-times.py x11 axpy soa vector   double 1024 2000000
 
 # Same with -O3
 
-cpp20 ./compile.py g++ c++23 O3 axpy
+cpp20 compile.py g++ c++23 O3 axpy
 
 cpp20 run-with-times.py x11 axpy aos carray   double 1024 2000000
 cpp20 run-with-times.py x11 axpy aos dynarray double 1024 2000000
@@ -73,7 +73,7 @@ cpp20 run-with-times.py x11 axpy soa vector   double 1024 2000000
 # IO/bound ?
 # Move to 65536*31250
 
-cpp20 ./compile.py g++ c++23 O3 axpy
+cpp20 compile.py g++ c++23 O3 axpy
 
 cpp20 run-with-times.py x11 axpy aos carray   double 65536 31250
 cpp20 run-with-times.py x11 axpy aos dynarray double 65536 31250
