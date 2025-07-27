@@ -1,0 +1,75 @@
+chavid/devcpp20:v14.2> ./compile-g++.sh 23 0 axpy
+chavid/devcpp20:v14.2> ./run.sh axpy aos vector half 1024 200000
+2.57 s,  3875 kBytes, 2.3789062
+chavid/devcpp20:v14.2> ./run.sh axpy aos vector float 1024 200000
+2.47 s,  3930 kBytes, 134.74911
+chavid/devcpp20:v14.2> ./run.sh axpy aos vector double 1024 200000
+2.47 s,  3911 kBytes, 135.01070004187324
+chavid/devcpp20:v14.2> ./run.sh axpy aos vector long 1024 200000
+2.53 s,  3949 kBytes, 135.01070004167572296
+chavid/devcpp20:v14.2> ./run.sh axpy aos vector quad 1024 200000
+7.53 s,  3943 kBytes, 135.01070004167559840461687823840403
+chavid/devcpp20:v14.2> ./run.sh axpy soa vector half 1024 200000
+1.33 s,  3902 kBytes, 2.3789062
+chavid/devcpp20:v14.2> ./run.sh axpy soa vector float 1024 200000
+1.12 s,  3880 kBytes, 134.74911
+chavid/devcpp20:v14.2> ./run.sh axpy soa vector double 1024 200000
+1.12 s,  3902 kBytes, 135.01070004187324
+chavid/devcpp20:v14.2> ./run.sh axpy soa vector long 1024 200000
+1.43 s,  3908 kBytes, 135.01070004167572296
+chavid/devcpp20:v14.2> ./run.sh axpy soa vector quad 1024 200000
+6.41 s,  3959 kBytes, 135.01070004167559840461687823840403
+chavid/devcpp20:v14.2> ./compile-g++.sh 23 2 axpy
+chavid/devcpp20:v14.2> ./run.sh axpy aos vector half 1024 200000
+0.35 s,  3822 kBytes, 2.3789062
+chavid/devcpp20:v14.2> ./run.sh axpy aos vector float 1024 200000
+0.06 s,  3835 kBytes, 134.74911
+chavid/devcpp20:v14.2> ./run.sh axpy aos vector double 1024 200000
+0.06 s,  3845 kBytes, 135.01070004187324
+chavid/devcpp20:v14.2> ./run.sh axpy aos vector long 1024 200000
+0.31 s,  3864 kBytes, 135.01070004167572296
+chavid/devcpp20:v14.2> ./run.sh axpy aos vector quad 1024 200000
+5.37 s,  3884 kBytes, 135.01070004167559840461687823840403
+chavid/devcpp20:v14.2> ./run.sh axpy soa vector half 1024 200000
+0.54 s,  3839 kBytes, 2.3789062
+chavid/devcpp20:v14.2> ./run.sh axpy soa vector float 1024 200000
+0.07 s,  3784 kBytes, 134.74911
+chavid/devcpp20:v14.2> ./run.sh axpy soa vector double 1024 200000
+0.07 s,  3805 kBytes, 135.01070004187324
+chavid/devcpp20:v14.2> ./run.sh axpy soa vector long 1024 200000
+0.30 s,  3803 kBytes, 135.01070004167572296
+chavid/devcpp20:v14.2> ./run.sh axpy soa vector quad 1024 200000
+5.34 s,  3827 kBytes, 135.01070004167559840461687823840403
+chavid/devcpp20:v14.2> ./run.sh axpy aos vector half 1024 2000000
+3.44 s,  3814 kBytes, 2.3789062
+chavid/devcpp20:v14.2> ./run.sh axpy aos vector float 1024 2000000
+0.60 s,  3828 kBytes, 1358.9313
+chavid/devcpp20:v14.2> ./run.sh axpy aos vector double 1024 2000000
+0.59 s,  3862 kBytes, 1350.10700040206
+chavid/devcpp20:v14.2> ./run.sh axpy aos vector long 1024 2000000
+3.09 s,  3840 kBytes, 1350.107000416771675
+chavid/devcpp20:v14.2> ./run.sh axpy soa vector half 1024 2000000
+5.43 s,  3809 kBytes, 2.3789062
+chavid/devcpp20:v14.2> ./run.sh axpy soa vector float 1024 2000000
+0.75 s,  3757 kBytes, 1358.9313
+chavid/devcpp20:v14.2> ./run.sh axpy soa vector double 1024 2000000
+0.75 s,  3801 kBytes, 1350.10700040206
+chavid/devcpp20:v14.2> ./run.sh axpy soa vector long 1024 2000000
+3.07 s,  3814 kBytes, 1350.107000416771675
+chavid/devcpp20:v14.2> ./compile-g++.sh 23 3 axpy
+chavid/devcpp20:v14.2> ./run.sh axpy aos vector half 1024 2000000
+3.45 s,  3860 kBytes, 2.3789062
+chavid/devcpp20:v14.2> ./run.sh axpy aos vector float 1024 2000000
+0.74 s,  3860 kBytes, 1358.9313
+chavid/devcpp20:v14.2> ./run.sh axpy aos vector double 1024 2000000
+0.62 s,  3897 kBytes, 1350.10700040206
+chavid/devcpp20:v14.2> ./run.sh axpy aos vector long 1024 2000000
+3.09 s,  3857 kBytes, 1350.107000416771675
+chavid/devcpp20:v14.2> ./run.sh axpy soa vector half 1024 2000000
+5.43 s,  3772 kBytes, 2.3789062
+chavid/devcpp20:v14.2> ./run.sh axpy soa vector float 1024 2000000
+0.10 s,  3804 kBytes, 1358.9313
+chavid/devcpp20:v14.2> ./run.sh axpy soa vector double 1024 2000000
+0.21 s,  3814 kBytes, 1350.10700040206
+chavid/devcpp20:v14.2> ./run.sh axpy soa vector long 1024 2000000
+3.03 s,  3817 kBytes, 1350.107000416771675

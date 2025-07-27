@@ -1,4 +1,6 @@
-.ipynb_checkpoints
-*.exe
-tmp.*
 WORK*
+build
+tmp.*
+*.log
+
+
