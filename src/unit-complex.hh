@@ -27,7 +27,12 @@ class Complex {
     fp_t argument() const { return std::atan(m_i/m_r) ; }
 
     Complex & operator*=( Complex const & other )
-     { return operator=((*this)*other) ; }
+     {
+      auto r = m_r*other.m_r - m_i*other.m_i ;
+      m_i = other.m_r*m_i + m_r*other.m_i ;
+      m_r = r ;
+      return (*this) ;
+     }
     friend Complex operator*( Complex const & lhs, Complex const & rhs )
      {
       auto r = lhs.m_r*rhs.m_r - lhs.m_i*rhs.m_i ;

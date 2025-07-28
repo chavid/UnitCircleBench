@@ -82,9 +82,8 @@ void ax_soa
     for ( std::size_t i = 0 ; i<size ; ++i )
      {
       auto r_new = xreals[i]*areals[i] - ximags[i]*aimags[i] ;
-      auto i_new = ximags[i]*areals[i] + xreals[i]*aimags[i] ;
+      ximags[i] = ximags[i]*areals[i] + xreals[i]*aimags[i] ;
       xreals[i] = r_new ;
-      ximags[i] = i_new ;
      }
    }
  }
