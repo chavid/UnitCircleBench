@@ -1,5 +1,4 @@
 
-
 #pragma once
 
 #include <concepts> // std::floating_point

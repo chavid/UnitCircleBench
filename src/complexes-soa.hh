@@ -23,10 +23,11 @@ void random_soa( auto && reals, auto && imags, std::size_t size )
 
 template< std::floating_point fp_t >
 void ax_soa(
-  fp_t __restrict__ * xreals, fp_t __restrict__ * ximags,
-  fp_t const __restrict__ * areals, fp_t const __restrict__ * aimags, 
+  fp_t * xreals, fp_t * ximags,
+  fp_t const * areals, fp_t const * aimags, 
   std::size_t size, long long repeat )
  {
+  auto before = time_before() ;
   for ( long long d = 1 ; d < repeat ; ++d )
    {
     for ( std::size_t i = 0 ; i<size ; ++i )
@@ -37,9 +38,10 @@ void ax_soa(
       ximags[i] = i_new ;
      }
    }
+  time_after(before,"pow") ;
  }
 
-auto reduce_soa( auto const && reals, auto const && imags, std::size_t size )
+auto reduce_soa( auto && reals, auto && imags, std::size_t size )
  {
   using array_type = std::remove_reference_t<decltype(reals)> ;
   using fp_type = typename array_type::value_type ;
@@ -59,7 +61,7 @@ class Complexes
      {
       using fp_type = typename Array::value_type ;
       Array a_rs{m_rs}, a_is{m_is} ;
-      time("pow",ax_soa<fp_type>,m_rs.data(),m_is.data(),a_rs.data(),a_is.data(),m_size,degree) ;
+      ax_soa<fp_type>(m_rs.data(),m_is.data(),a_rs.data(),a_is.data(),m_size,degree) ;
     }
     auto reduce() const
      { return reduce_soa(std::span(std::begin(m_rs),m_size),std::span(std::begin(m_is),m_size),m_size) ; }    
@@ -83,8 +85,10 @@ class Complexes<fp_t *>
     Complexes & operator=( Complexes && other )
      {
       m_size = other.m_size ;
+      delete [] m_rs ;
       m_rs = other.m_rs ;
       other.m_rs = nullptr ;
+      delete [] m_is ;
       m_is = other.m_is ;
       other.m_is = nullptr ;
       return *this ;
@@ -96,7 +100,7 @@ class Complexes<fp_t *>
       std::copy(m_rs,m_rs+m_size,r_init) ;
       auto i_init = new fp_t [m_size] ;
       std::copy(m_is,m_is+m_size,i_init) ;
-      time("pow",ax_soa<fp_t>,m_rs,m_is,r_init,i_init,m_size,degree) ;
+      ax_soa<fp_t>(m_rs,m_is,r_init,i_init,m_size,degree) ;
       delete [] r_init ;
       delete [] i_init ;
      }
@@ -118,7 +122,7 @@ class Complexes<std::array<fp_t,MAX_ARRAY_SIZE>>
     void pow( long long degree )
      {
       auto r_init{m_rs}, i_init{m_is} ;
-      time("pow",ax_soa<fp_t>,m_rs.data(),m_is.data(),r_init.data(),i_init.data(),m_size,degree) ;
+      ax_soa<fp_t>(m_rs.data(),m_is.data(),r_init.data(),i_init.data(),m_size,degree) ;
      }
     auto reduce() const
      { return reduce_soa(std::span(std::begin(m_rs),m_size),std::span(std::begin(m_is),m_size),m_size) ; }    
@@ -137,6 +141,7 @@ void pow_soa_valarray(
   auto const areals {xreals} ;
   auto const aimags {ximags} ;
   std::valarray<fp_t> r_new, i_new ;
+  auto before = time_before() ;
   for ( long long d = 1 ; d < repeat ; ++d )
    {
     r_new = xreals*areals - ximags*aimags ;
@@ -144,6 +149,7 @@ void pow_soa_valarray(
     xreals = r_new ;
     ximags = i_new ;
    }
+  time_after(before,"pow") ;
  }
 
 template< std::floating_point fp_t >
@@ -153,7 +159,7 @@ class Complexes<std::valarray<fp_t>>
     Complexes( std::size_t size ) : m_size(size), m_rs(size), m_is(size)
      { random_soa(std::span(std::begin(m_rs),m_size),std::span(std::begin(m_is),m_size),m_size) ; }
     void pow( long long degree )
-      { time("pow",pow_soa_valarray<fp_t>,m_rs,m_is,degree) ; }
+      { pow_soa_valarray<fp_t>(m_rs,m_is,degree) ; }
     auto reduce() const
      { return reduce_soa(std::span(std::begin(m_rs),m_size),std::span(std::begin(m_is),m_size),m_size) ; }    
   private :
@@ -174,6 +180,7 @@ class Complexes<std::list<fp_t>>
      }
     void pow( long long degree )
      {
+      auto before = time_before() ;
       for ( auto itr_rs = std::begin(m_rs), itr_is = std::begin(m_is) ; itr_rs != std::end(m_rs) ; ++itr_rs, ++itr_is )
        {
         Complex<fp_t> cplx {*itr_rs,*itr_is}, res {cplx} ;
@@ -182,6 +189,7 @@ class Complexes<std::list<fp_t>>
         *itr_rs = res.real() ;
         *itr_is = res.imag() ;
        }
+      time_after(before,"pow") ;
      }
     auto reduce() const
      {

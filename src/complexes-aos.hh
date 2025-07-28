@@ -27,11 +27,13 @@ void init_aos( auto && collection )
 template< std::floating_point fp_t >
 void ax_aos( Complex<fp_t> * xs, Complex<fp_t> const * as, std::size_t size, long long repeat )
  {
+  auto before = time_before() ;
   for ( long long d = 1 ; d < repeat ; ++d )
    {
     for ( std::size_t i = 0 ; i<size ; ++i )
      { xs[i] *= as[i] ; }
    }
+  time_after(before,"pow") ;
  }
 
 template< typename Collection >
@@ -58,7 +60,7 @@ class AoS : public Array
     void pow( long long degree )
      {
       Array as{*this} ;
-      time("pow",ax_aos<fp_type>,this->data(),as.data(),this->size(),degree) ;
+      ax_aos<fp_type>(this->data(),as.data(),this->size(),degree) ;
      }
     value_type reduce() const
      { return reduce_aos(std::span<Complex<fp_type> const>(*this)) ; }
@@ -89,7 +91,7 @@ class AoS<Complex<fp_t>*>
      {
       auto as = new Complex<fp_t> [m_size] ;
       std::copy(m_data,m_data+m_size,as) ;
-      time("pow",ax_aos<fp_t>,m_data,as,m_size,degree) ;
+      ax_aos<fp_t>(m_data,as,m_size,degree) ;
       delete [] as ;
      }
     Complex<fp_t> reduce() const
@@ -110,7 +112,7 @@ class AoS<std::array<Complex<fp_t>,MAX_ARRAY_SIZE>> : public std::array<Complex<
     void pow( long long degree )
      {
       auto as {*this} ;
-      time("pow",ax_aos<fp_t>,this->data(),as.data(),m_size,degree) ;
+      ax_aos<fp_t>(this->data(),as.data(),m_size,degree) ;
      }
     Complex<fp_t> reduce() const
      { return reduce_aos(std::span<Complex<fp_t> const>(this->begin(),m_size)) ; }
@@ -124,8 +126,10 @@ template< std::floating_point fp_t >
 void pow_aos_valarray( std::valarray<Complex<fp_t>> & collection, long long degree )
  {
   auto const init {collection} ;
+  auto before = time_before() ;
   for ( long long d = 1 ; d < degree ; ++d )
    { collection *= init ; }
+  time_after(before,"pow") ;
  }
 
 template< std::floating_point fp_t >
@@ -138,7 +142,7 @@ class AoS<std::valarray<Complex<fp_t>>> : public std::valarray<Complex<fp_t>>
     AoS( std::size_t a_size ) : valarray(a_size)
      { init_aos(std::span<Complex<fp_type>>(*this)) ; }
     void pow( long long degree )
-     { time("pow",pow_aos_valarray<fp_type>,*this,degree) ; }
+     { pow_aos_valarray<fp_type>(*this,degree) ; }
     value_type reduce() const
      { return reduce_aos(std::span<Complex<fp_type> const>(*this)) ; }
  } ;
@@ -148,12 +152,14 @@ class AoS<std::valarray<Complex<fp_t>>> : public std::valarray<Complex<fp_t>>
 template< std::floating_point fp_t >
 void pow_aos_list( std::list<Complex<fp_t>> & collection, long long degree )
  {
+  auto before = time_before() ;
   for ( auto & element : collection )
    {
     auto init = element ;
     for ( long long d = 1 ; d < degree ; ++d )
      { element *= init ; }
    }
+  time_after(before,"pow") ;
  }
 
 template< std::floating_point fp_t >
@@ -164,7 +170,7 @@ class AoS<std::list<Complex<fp_t>>> : public std::list<Complex<fp_t>>
     AoS( std::size_t a_size ) : list(a_size)
      { init_aos(*static_cast<list *>(this)) ; }
     void pow( long long degree )
-     { time("pow",pow_aos_list<fp_t>,*this,degree) ; }
+     { pow_aos_list<fp_t>(*this,degree) ; }
     Complex<fp_t> reduce() const
      { return reduce_aos(*static_cast<list const *>(this)) ; }
  } ;

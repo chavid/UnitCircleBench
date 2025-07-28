@@ -1,20 +1,21 @@
 
 
+#include "utilities.hh"
+#include "unit-complex.hh"
+#include "dyn-array.hh"
+#include "complexes-aos.hh"
+#include "complexes-soa.hh"
+
 #include <iostream>
+#include <format>
 #include <cassert> // for assert
 #include <valarray>
 #include <vector>
 #include <list>
 #include <array>
 #include <stdfloat>
-#include <numbers>
-#include <cmath>
-#include <format>
-
-#include "utilities.hh"
-#include "unit-complex.hh"
-#include "complexes-aos.hh"
-#include "complexes-soa.hh"
+//#include <numbers>
+//#include <cmath>
 
 
 //================================================================

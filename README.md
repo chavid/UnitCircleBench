@@ -17,7 +17,7 @@ Requirements
 Run the complexes benchmark:
 ```
 source env.bash
-benchs/bench-complexes.bash
+benchs/complexes.bash
 ```
 
 ## References
@@ -35,4 +35,13 @@ benchs/bench-complexes.bash
   - the evaluation of computational intermediates in 80-bit on old x86 CPUs (before the 64-bit era that made SSE mandatory).
   - the propagation of floating-point constants in extended precision,
   - the contraction of `a*b+c` into `fma(a, b, c)` (with `-O2`), corresponding to the default option `-ffp-contract=fast`. This can change the results, and is not always desirable. If one wants to keep the same results, one must add `-ffp-contract=off`. The files `fma.bash` and `fma.cpp` demonstrate this.
+- Should not use `time()` from `utilities.hh` at low level, or this seems to sometimes prevent vectorization.
+- There are many subtil interactions between inlining and vectorization, and a simple innocent choice, such as giving a size as an integer or as a call to `size()`, may hardly impact performance : see `subtil-size.bash`.
+- GCC starts to inline at -O2 since release 12 (https://www.phoronix.com/forums/forum/software/programming-compilers/1283541-gcc-12-enables-auto-vectorization-for-o2-optimization-level).
+- `__restrict__` did not help.
 
+
+## References
+
+- https://wiki.gentoo.org/wiki/GCC_optimization
+- https://gcc.gnu.org/projects/tree-ssa/vectorization.html
