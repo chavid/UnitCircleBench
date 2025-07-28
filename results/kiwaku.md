@@ -13,3 +13,13 @@ Mais pas sur les complexes :
 - Of aos float 1024 100000 : 0.210 s
 - Of soa float 1024 100000 : 0.190 s
 
+## Difficulté avec la conception
+
+1) Pas trouvé de moyen simple de créer une table 1d
+   d'une certaine taille et d'un certain value_type.
+   Tous les exemples semblent avoir besoin d'une source.
+
+2) Le fait que l'egalite entre deux vues swap ce sur
+   quoi elles pointent me semble problematique. Et je
+   n'ai pas trouvé de methode complementaire permettant
+   une semantique de valeur... OK, il y a un algo de copie.

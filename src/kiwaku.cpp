@@ -3,6 +3,13 @@
 #include "unit-complex.hh"
 #include "dyn-array.hh"
 
+#include <kwk/context/cpu/context.hpp>
+#include <kwk/context/eve/context.hpp>
+//#include <kwk/context/sycl/context.hpp>
+#include <kwk/container.hpp>
+#include <kwk/algorithm/algos/transform.hpp>
+#include <kwk/algorithm/algos/copy.hpp>
+
 #include <iostream>
 #include <format>
 #include <cassert> // for assert
@@ -71,21 +78,22 @@ void init_random_soa( auto && reals, auto && imags, std::size_t size )
    { random_unit_complex(reals[i],imags[i]) ; }
  }
 
-template< std::floating_point fp_t >
+template< typename Context, kwk::concepts::view V >
 void ax_soa
- ( fp_t const * areals, fp_t const * aimags,
-   fp_t * xreals, fp_t * ximags,
-   std::size_t size, long long repeat )
+ ( Context & context, V & tmp, V & areals, V & aimags, V & xreals, V & ximags, long long repeat )
  {
+  auto before = time_before() ;
   for ( long long d = 0 ; d <repeat ; ++d )
    {
-    for ( std::size_t i = 0 ; i<size ; ++i )
-     {
-      auto r_new = xreals[i]*areals[i] - ximags[i]*aimags[i] ;
-      ximags[i] = ximags[i]*areals[i] + xreals[i]*aimags[i] ;
-      xreals[i] = r_new ;
-     }
+    kwk::transform(context,[](auto ar, auto ai, auto xr, auto xi)
+     { return xr*ar - xi*ai ; }
+     ,tmp,areals,aimags,xreals,ximags) ;
+    kwk::transform(context,[](auto ar, auto ai, auto xr, auto xi)
+     { return xi*ar + xr*ai ; }
+     ,ximags,areals,aimags,xreals,ximags) ;
+    kwk::copy(context,xreals,tmp) ;
    }
+  time_after(before,"pow") ;
  }
 
 auto reduce_soa( auto && reals, auto && imags, std::size_t size )
@@ -98,20 +106,26 @@ auto reduce_soa( auto && reals, auto && imags, std::size_t size )
   return acc ;
  }
 
-template< std::floating_point fp_t >
+template< typename Context, std::floating_point fp_t >
 class ComplexesSoA
  {
   public :  
-    ComplexesSoA( std::size_t size ) : m_size(size), m_rs(size), m_is(size)
+    ComplexesSoA( Context & context, std::size_t size ) : m_context(context), m_size(size), m_rs(size), m_is(size)
      { init_random_soa(m_rs,m_is,m_size) ; }
     void pow( long long degree )
      {
-      auto a_rs{m_rs}, a_is{m_is} ;
-      ax_soa<fp_t>(a_rs.data(),a_is.data(),m_rs.data(),m_is.data(),m_size,degree-1) ;
+      std::vector<fp_t> tmp(m_size), a_rs{m_rs}, a_is{m_is} ;
+      auto tmpv = kwk::view{ kwk::source = tmp.data(), kwk::of_size(m_size) } ;
+      auto arv = kwk::view{ kwk::source = a_rs.data(), kwk::of_size(m_size) } ;
+      auto aiv = kwk::view{ kwk::source = a_is.data(), kwk::of_size(m_size) } ;
+      auto xrv = kwk::view{ kwk::source = m_rs.data(), kwk::of_size(m_size) } ;
+      auto xiv = kwk::view{ kwk::source = m_is.data(), kwk::of_size(m_size) } ;
+      ax_soa(m_context,tmpv,arv,aiv,xrv,xiv,degree-1) ;
      }
     auto reduce() const
      { return reduce_soa(m_rs,m_is,m_size) ; }    
   private :
+    Context & m_context ;
     std::size_t m_size ;
     std::vector<fp_t> m_rs, m_is ;
  } ;
@@ -122,33 +136,70 @@ class ComplexesSoA
 //================================================================
 
 template< typename Collection >
-void main_impl( std::size_t size, long long degree )
+void main_impl( Collection & collection, long long degree )
  {
-  Collection collection(size) ;
   collection.pow(degree) ;
   auto res = collection.reduce() ;
-  std::cout<<std::format("(checksum: {} {})",res.magnitude(),res.argument())<<std::endl ;
+  if (std::abs(1.-res.magnitude())<0.01)
+   { std::cout<<std::format("(checksum: {})",res.argument())<<std::endl ; }
+  else
+   { std::cout<<std::format("(checksum: wrong magnitude {})",res.argument())<<std::endl ; }
+ }
+
+template< std::floating_point fp_t >
+void main_aos( std::string execution_tname, std::size_t size, long long degree )
+ {
+  if (execution_tname=="cpu")
+   {
+    ComplexesAoS<fp_t> collection(size) ;
+    main_impl(collection,degree) ;
+   }
+  else if (execution_tname=="simd")
+   {
+    ComplexesAoS<fp_t> collection(size) ;
+    main_impl(collection,degree) ;
+   }
+  else throw "unknown execution_tname" ;
+ }
+
+template< std::floating_point fp_t >
+void main_soa( std::string execution_tname, std::size_t size, long long degree )
+ {
+  if (execution_tname=="cpu")
+   {
+    ComplexesSoA<decltype(kwk::cpu),fp_t> collection(kwk::cpu,size) ;
+    main_impl(collection,degree) ;
+   }
+  else if (execution_tname=="simd")
+   {
+    ComplexesSoA<decltype(kwk::simd),fp_t> collection(kwk::simd,size) ;
+    main_impl(collection,degree) ;
+   }
+  else throw "unknown execution_tname" ;
  }
 
 int main( int argc, char * argv[] )
  {
-  assert(argc==5) ;
-  std::string arrangement_tname(argv[1]) ;
-  std::string fp_tname(argv[2]) ;
-  std::size_t size = {std::strtoull(argv[3],nullptr,10)} ;
-  long long degree = {std::strtoll(argv[4],nullptr,10)} ;
+  assert(argc==6) ;
+  std::string execution_tname(argv[1]) ;
+  std::string arrangement_tname(argv[2]) ;
+  std::string fp_tname(argv[3]) ;
+  std::size_t size = {std::strtoull(argv[4],nullptr,10)} ;
+  long long degree = {std::strtoll(argv[5],nullptr,10)} ;
   srand(1) ;
   
   if (arrangement_tname=="aos")
    {
-    if (fp_tname=="float") time("main",main_impl<ComplexesAoS<float>>,size,degree) ;
-    else if (fp_tname=="double") time("main",main_impl<ComplexesAoS<double>>,size,degree) ;
+    if (fp_tname=="float") time("main",main_aos<float>,execution_tname,size,degree) ;
+    else if (fp_tname=="double") time("main",main_aos<double>,execution_tname,size,degree) ;
     else throw "unknown precision" ;
    }
   else if (arrangement_tname=="soa")
    {
-    if (fp_tname=="float") time("main",main_impl<ComplexesSoA<float>>,size,degree) ;
-    else if (fp_tname=="double") time("main",main_impl<ComplexesSoA<double>>,size,degree) ;
+    if (fp_tname=="float")
+     { time("main",main_soa<float>,execution_tname,size,degree) ; }
+    else if (fp_tname=="double")
+     { time("main",main_soa<double>,execution_tname,size,degree) ; }
     else throw "unknown precision" ;
    }
   else throw "unknown arrangement_tname" ;

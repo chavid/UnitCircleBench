@@ -28,5 +28,6 @@ mkdir -p ${UNIT_BUILD}
 
 cpp20 () { ${UNIT_BIN}/run-with-docker.bash chavid/devcpp20:v14.2 $* ; }
 clang19 () { ${UNIT_BIN}/run-with-docker.bash silkeh/clang:19-bookworm $* ; }
-export -f cpp20 clang19
+kwk () { ${UNIT_BIN}/run-with-docker.bash chavid/kiwaku:v14.2 $* ; }
+export -f cpp20 clang19 kwk
 

@@ -157,7 +157,7 @@ class Complexes<std::valarray<fp_t>>
     Complexes( std::size_t size ) : m_size(size), m_rs(size), m_is(size)
      { random_soa(std::span(std::begin(m_rs),m_size),std::span(std::begin(m_is),m_size),m_size) ; }
     void pow( long long degree )
-      { pow_soa_valarray<fp_t>(m_rs,m_is,degree) ; }
+     { pow_soa_valarray<fp_t>(m_rs,m_is,degree) ; }
     auto reduce() const
      { return reduce_soa(std::span(std::begin(m_rs),m_size),std::span(std::begin(m_is),m_size),m_size) ; }    
   private :

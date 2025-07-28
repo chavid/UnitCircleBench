@@ -74,7 +74,7 @@ int main( int argc, char * argv[] )
     else if (fp_tname=="float") time("main",main_aos<float>,collection_tname,size,degree) ;
     else if (fp_tname=="double") time("main",main_aos<double>,collection_tname,size,degree) ;
     else if (fp_tname=="long") time("main",main_aos<long double>,collection_tname,size,degree) ;
-    else if (fp_tname=="quad") time("main",main_aos<std::float128_t>,collection_tname,size,degree) ;
+    //else if (fp_tname=="quad") time("main",main_aos<std::float128_t>,collection_tname,size,degree) ;
     else throw "unknown precision" ;
    }
   else if (arrangement_tname=="soa")
@@ -83,7 +83,7 @@ int main( int argc, char * argv[] )
     else if (fp_tname=="float") time("main",main_soa<float>,collection_tname,size,degree) ;
     else if (fp_tname=="double") time("main",main_soa<double>,collection_tname,size,degree) ;
     else if (fp_tname=="long") time("main",main_soa<long double>,collection_tname,size,degree) ;
-    else if (fp_tname=="quad") time("main",main_soa<std::float128_t>,collection_tname,size,degree) ;
+    //else if (fp_tname=="quad") time("main",main_soa<std::float128_t>,collection_tname,size,degree) ;
     else throw "unknown precision" ;
    }
   else throw "unknown arrangement_tname" ;
