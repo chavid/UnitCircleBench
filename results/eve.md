@@ -5,15 +5,16 @@ La version `transform` semble anormalement longue. Elle l'était encore beaucoup
 
 Avec gcc 15.1 on en est là :
 
-- eve.exe raw       double 1024 100000 : 0.042 s, checksum: -1.3091659385215229
-- eve.exe wide      double 1024 100000 : 0.027 s, checksum: -1.30916593852261
-- eve.exe transform double 1024 100000 : 0.068 s, checksum: -1.30916593852261
+- eve.exe raw            double 1024 100000 : 0.042 s, checksum: -1.3091659385215229
+- eve.exe simd           double 1024 100000 : 0.052 s, checksum: -1.30916593852261
+- eve.exe eve::wide      double 1024 100000 : 0.027 s, checksum: -1.30916593852261
+- eve.exe eve::transform double 1024 100000 : 0.068 s, checksum: -1.30916593852261
 
 Avec clang 20 :
 
-- eve.exe raw       double 1024 100000 : 0.088 s, checksum: -1.3091659385216723
-- eve.exe wide      double 1024 100000 : 0.032 s, checksum: -1.3091659385210535
-- eve.exe transform double 1024 100000 : 0.077 s, checksum: -1.3091659385210535
+- eve.exe raw            double 1024 100000 : 0.088 s, checksum: -1.3091659385216723
+- eve.exe eve::wide      double 1024 100000 : 0.032 s, checksum: -1.3091659385210535
+- eve.exe eve::transform double 1024 100000 : 0.077 s, checksum: -1.3091659385210535
 
 Autres infos :
 - Options de compil : `-g -march=native -mtune=native -funroll-loops -Wall -Wextra -Wfatal-errors -lpthread -ltbb`. 

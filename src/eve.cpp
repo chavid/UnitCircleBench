@@ -5,6 +5,9 @@
 
 #include <eve/module/algo.hpp>
 
+#include <experimental/simd>
+namespace stdx = std::experimental;
+
 #include <cassert> // for assert
 #include <vector>
 
@@ -62,7 +65,53 @@ class ComplexesRaw
 
 
 //================================================================
-// Implem : home-made eve::wide
+// Implem : std::simd
+//================================================================
+
+template< std::floating_point fp_t >
+class ComplexesSimd
+ {
+  public :  
+    ComplexesSimd( std::size_t size ) : m_size(size), m_rs(size), m_is(size)
+     { init_random_soa(m_rs,m_is,m_size) ; }
+    void pow( long long degree )
+     {
+      std::size_t step = stdx::simd<fp_t>::size() ;
+      std::vector<fp_t> a_rs{m_rs}, a_is{m_is} ;
+      auto before = time_before() ;
+      for ( long long d = 1 ; d <degree ; ++d )
+       {
+        std::size_t i, size1 = m_size-step ;
+        for ( i=0 ; i<=size1 ; i+=step )
+         {
+          stdx::simd<fp_t> arw{&a_rs[i],stdx::element_aligned} ;
+          stdx::simd<fp_t> aiw{&a_is[i],stdx::element_aligned} ;
+          stdx::simd<fp_t> mrw{&m_rs[i],stdx::element_aligned} ;
+          stdx::simd<fp_t> miw{&m_is[i],stdx::element_aligned} ;
+          stdx::simd<fp_t> tmpw = mrw*arw - miw*aiw ;
+          miw = miw*arw + mrw*aiw ;
+          tmpw.copy_to(&m_rs[i],stdx::element_aligned) ;
+          miw.copy_to(&m_is[i],stdx::element_aligned) ;
+         }
+        for ( ; i<m_size ; ++i )
+         {
+          auto tmp = m_rs[i]*a_rs[i] - m_is[i]*a_is[i] ;
+          m_is[i] = m_is[i]*a_rs[i] + m_rs[i]*a_is[i] ;
+          m_rs[i] = tmp ;
+         }
+       }
+      time_after(before,"pow") ;
+     }
+    auto reduce() const
+     { return reduce_soa(m_rs,m_is,m_size) ; }    
+  private :
+    std::size_t m_size ;
+    std::vector<fp_t> m_rs, m_is ;
+ } ;
+
+
+//================================================================
+// Implem : eve::wide
 //================================================================
 
 template< std::floating_point fp_t >
@@ -160,6 +209,8 @@ void main_fp( std::string const & implem_tname, std::size_t size, long long degr
  {
   if (implem_tname=="raw")
    { main_impl<ComplexesRaw<fp_t>>(size,degree) ; }
+  else if (implem_tname=="simd")
+   { main_impl<ComplexesSimd<fp_t>>(size,degree) ; }
   else if (implem_tname=="wide")
    { main_impl<ComplexesWide<fp_t>>(size,degree) ; }
   else if (implem_tname=="transform")
