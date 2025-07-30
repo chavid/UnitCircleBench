@@ -37,8 +37,22 @@ if (UNIT_BUILD==''):
   print('Environnement error: UNIT_BUILD undefined')
   exit(1)
 
-compile_cmd = "rm -f {unit_build}/{radix}.exe && {compiler} -g -std={cpp} -{opt} -march=native -mtune=native -funroll-loops -Wall -Wextra -Wfatal-errors -lpthread -ltbb {unit_src}/{radix}.cpp -o {unit_build}/{radix}.exe".format(
-  compiler=CPP_COMPILER,unit_src=UNIT_SRC,unit_build=UNIT_BUILD,radix=FILE_RADIX,cpp=CPP_LEVEL,opt=OPT_LEVEL)
+if CPP_COMPILER=="g++":
+  CPP_OPTIONS = "-g -march=native -mtune=native -funroll-loops -Wall -Wextra -Wfatal-errors -lpthread -ltbb"
+  compile_cmd = "rm -f {unit_build}/{radix}.exe && g++ -std={cpp} -{opt} {cpp_options} {unit_src}/{radix}.cpp -o {unit_build}/{radix}.exe".format(
+    cpp_options=CPP_OPTIONS,unit_src=UNIT_SRC,unit_build=UNIT_BUILD,radix=FILE_RADIX,cpp=CPP_LEVEL,opt=OPT_LEVEL)
+elif CPP_COMPILER=="clang++":
+  CPP_OPTIONS = "-g -march=native -mtune=native -funroll-loops -Wall -Wextra -Wfatal-errors -stdlib=libc++ -lpthread -ltbb"
+  compile_cmd = "rm -f {unit_build}/{radix}.exe && clang++ -std={cpp} -{opt} {cpp_options} {unit_src}/{radix}.cpp -o {unit_build}/{radix}.exe".format(
+    cpp_options=CPP_OPTIONS,unit_src=UNIT_SRC,unit_build=UNIT_BUILD,radix=FILE_RADIX,cpp=CPP_LEVEL,opt=OPT_LEVEL)
+else:
+  print('Unknown compiler:',CPP_CPMPILER)
+  exit(1)
+
+# à considérer
+# - `-mavx2` au lieu des natives
+# - enlever le -funroll-loops ?
+# - définir des "jeux d'options" que l'on peut facilement activer/desactiver par option au script.
 
 if os.system(compile_cmd) != 0:
     print(f"COMPILATION FAILED with exit code: {result}")

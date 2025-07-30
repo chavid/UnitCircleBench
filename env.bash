@@ -26,8 +26,9 @@ mkdir -p ${UNIT_BUILD}
 
 # exportable aliases
 
-cpp20 () { ${UNIT_BIN}/run-with-docker.bash chavid/devcpp20:v14.2 $* ; }
-clang19 () { ${UNIT_BIN}/run-with-docker.bash silkeh/clang:19-bookworm $* ; }
-kwk () { ${UNIT_BIN}/run-with-docker.bash chavid/kiwaku:v14.2 $* ; }
-export -f cpp20 clang19 kwk
+dev-gcc () { ${UNIT_BIN}/run-with-docker.bash chavid/dev-gcc:15.1.0-bookworm $* ; }
+dev-clang () { ${UNIT_BIN}/run-with-docker.bash chavid/dev-clang:20-bookworm $* ; }
+kwk-gcc () { ${UNIT_BIN}/run-with-docker.bash chavid/kiwaku-gcc:15.1.0-bookworm $* ; }
+kwk-clang () { ${UNIT_BIN}/run-with-docker.bash chavid/kiwaku-clang:20-bookworm $* ; }
+export -f dev-gcc dev-clang kwk-gcc kwk-clang
 

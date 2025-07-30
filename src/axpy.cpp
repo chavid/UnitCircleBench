@@ -1,6 +1,5 @@
 
 #include <iostream>
-#include <format>
 #include <cassert> // for assert
 #include <cstdlib> // for rand
 #include <valarray>

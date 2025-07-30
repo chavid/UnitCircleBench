@@ -5,8 +5,6 @@
 
 #include <eve/module/algo.hpp>
 
-#include <iostream>
-#include <format>
 #include <cassert> // for assert
 #include <vector>
 
@@ -77,16 +75,24 @@ class ComplexesWide
      {
       std::size_t step = eve::cardinal_v<eve::wide<fp_t>> ;
       std::vector<fp_t> a_rs{m_rs}, a_is{m_is} ;
-      eve::wide<fp_t> tmp, arw, aiw, mrw, miw ;
       auto before = time_before() ;
       for ( long long d = 1 ; d <degree ; ++d )
-      for ( std::size_t i = 0 ; i<m_size ; i+=step )
        {
-        eve::wide<fp_t> arw(&a_rs[i]), aiw(&a_is[i]), mrw(&m_rs[i]), miw(&m_is[i]) ;
-        tmp = mrw*arw - miw*aiw ;
-        miw = miw*arw + mrw*aiw ;
-        eve::store(tmp,&m_rs[i]) ;
-        eve::store(miw,&m_is[i]) ;
+        std::size_t i, size1 = m_size-step ;
+        for ( i=0 ; i<=size1 ; i+=step )
+         {
+          eve::wide<fp_t> arw(&a_rs[i]), aiw(&a_is[i]), mrw(&m_rs[i]), miw(&m_is[i]) ;
+          eve::wide<fp_t> tmpw = mrw*arw - miw*aiw ;
+          miw = miw*arw + mrw*aiw ;
+          eve::store(tmpw,&m_rs[i]) ;
+          eve::store(miw,&m_is[i]) ;
+         }
+        for ( ; i<m_size ; ++i )
+         {
+          auto tmp = m_rs[i]*a_rs[i] - m_is[i]*a_is[i] ;
+          m_is[i] = m_is[i]*a_rs[i] + m_rs[i]*a_is[i] ;
+          m_rs[i] = tmp ;
+         }
        }
       time_after(before,"pow") ;
      }
@@ -114,12 +120,13 @@ class ComplexesTransform
       auto before = time_before() ;
       for ( long long d = 1 ; d <degree ; ++d )
        {
-        eve::algo::transform_to
-         ( eve::views::zip(a_rs,a_is,m_rs,m_is),tmp,[](auto v)
-         { return get<2>(v)*get<0>(v) - get<3>(v)*get<1>(v) ; }) ;
-        eve::algo::transform_to
-         ( eve::views::zip(a_rs,a_is,m_rs,m_is),m_is,[](auto v)
-         { return get<3>(v)*get<0>(v) + get<2>(v)*get<1>(v) ; }) ;
+        auto z = eve::views::zip(a_rs,a_is,m_rs,m_is) ;
+        eve::algo::transform_to[eve::algo::no_aligning]
+         ( z,tmp,[](auto & v)
+           { return get<2>(v)*get<0>(v) - get<3>(v)*get<1>(v) ; }) ;
+        eve::algo::transform_to[eve::algo::no_aligning]
+         ( z,m_is,[](auto & v)
+           { return get<3>(v)*get<0>(v) + get<2>(v)*get<1>(v) ; }) ;
         std::swap(m_rs,tmp) ;
        }
       time_after(before,"pow") ;
@@ -168,7 +175,9 @@ int main( int argc, char * argv[] )
   std::size_t size = {std::strtoull(argv[3],nullptr,10)} ;
   long long degree = {std::strtoll(argv[4],nullptr,10)} ;
   srand(1) ;
-  
+
+  //std::cout << eve::current_api << "\n";
+
   if (fp_tname=="float")
    { time("main",main_fp<float>,implem_tname,size,degree) ; }
   else if (fp_tname=="double")

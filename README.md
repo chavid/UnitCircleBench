@@ -14,11 +14,13 @@ Requirements
 - Python 3.
 - Docker.
 
-Run the complexes benchmark:
+Run the benchmark:
 ```
 source env.bash
 benchs/complexes.bash
+benchs/eve.bash...
 ```
+
 
 ## References
 

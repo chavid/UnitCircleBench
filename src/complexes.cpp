@@ -7,7 +7,6 @@
 #include "complexes-soa.hh"
 
 #include <iostream>
-#include <format>
 #include <cassert> // for assert
 #include <valarray>
 #include <vector>

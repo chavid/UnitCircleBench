@@ -4,19 +4,31 @@
 
 #include <chrono>
 #include <string_view>
-#include <iostream>
 #include <algorithm>
 
 
 //================================================================
-// Print
+// Print and format
 //================================================================
+
+#include <iostream>
+
+//#ifdef __clang__
+//#  include <fmt/format.h>
+//#  include <fmt/ostream.h>
+//#  define format fmt::format
+//#else
+#  include <format>
+//#  define format std::format
+//#endif
 
 void print( auto && collection )
  {
   std::cout<<"( " ;
   for ( auto element : collection )
-   { std::cout<<std::format("{} ",element) ; }
+   {
+    std::cout<<format("{} ",element) ;
+   }
   std::cout<<")"<<std::endl ;
  }
 
