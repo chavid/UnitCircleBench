@@ -16,7 +16,6 @@ Avec clang 20 :
 - eve.exe transform double 1024 100000 : 0.077 s, checksum: -1.3091659385210535
 
 Autres infos :
-- Version de EVE : celle ramenée par KIWAKU quand on clone sa branche `david-stable`.
 - Options de compil : `-g -march=native -mtune=native -funroll-loops -Wall -Wextra -Wfatal-errors -lpthread -ltbb`. 
 - Valeur de `eve::current_api` : `X86 AVX512 (with FMA3 support)`.
 
