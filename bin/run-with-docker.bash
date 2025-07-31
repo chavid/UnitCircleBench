@@ -4,7 +4,7 @@ img=${1}
 shift
 
 echo "$img>" $*
-docker run --user $(id -u):$(id -g) --rm -v "${UNIT_DIR}":/work -w /work -it $img bin/docker-wrapper.bash $*
+docker run --gpus all --device=/dev/dri --user $(id -u):$(id -g) --rm -v "${UNIT_DIR}":/work -w /work -it -e DTAG=${img} ${img} bin/docker-wrapper.bash $*
 
 if [ $? -ne 0 ]; then
   echo DOCKER FAILED

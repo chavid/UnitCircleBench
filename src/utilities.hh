@@ -13,14 +13,14 @@
 
 #include <iostream>
 
-//#ifdef __clang__
-//#  include <fmt/format.h>
-//#  include <fmt/ostream.h>
-//#  define format fmt::format
-//#else
+#ifdef __INTEL_LLVM_COMPILER
+#  include <fmt/format.h>
+#  include <fmt/ostream.h>
+#  define myformat fmt::format
+#else
 #  include <format>
-//#  define format std::format
-//#endif
+#  define myformat std::format
+#endif
 
 void print( auto && collection )
  {

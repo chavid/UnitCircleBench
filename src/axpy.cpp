@@ -258,9 +258,9 @@ void main_impl( std::size_t size, std::size_t repeat )
   while (repeat--)
     collection.axpy(a) ;
   fp_type res = collection.mean_y() ;
-  std::cout<<std::format("Precision: {:2d} bytes",sizeof(res))<<std::endl ;
-  std::cout<<std::format("Result: {}",res)<<std::endl ;
-  std::cout<<std::format("(checksum: {})",res)<<std::endl ;
+  std::cout<<myformat("Precision: {:2d} bytes",sizeof(res))<<std::endl ;
+  std::cout<<myformat("Result: {}",res)<<std::endl ;
+  std::cout<<myformat("(checksum: {})",res)<<std::endl ;
  }
 
 template< std::floating_point fp_t >

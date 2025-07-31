@@ -3,12 +3,15 @@
 #include "unit-complex.hh"
 #include "dyn-array.hh"
 
-#include <kwk/context/cpu/context.hpp>
-#include <kwk/context/eve/context.hpp>
-//#include <kwk/context/sycl/context.hpp>
 #include <kwk/container.hpp>
 #include <kwk/algorithm/algos/transform.hpp>
 #include <kwk/algorithm/algos/copy.hpp>
+
+#include <kwk/context/cpu/context.hpp>
+#include <kwk/context/eve/context.hpp>
+#ifdef __INTEL_LLVM_COMPILER
+#  include <kwk/context/sycl/context.hpp>
+#endif
 
 #include <cassert> // for assert
 #include <vector>
@@ -139,9 +142,9 @@ void main_impl( Collection & collection, long long degree )
   collection.pow(degree) ;
   auto res = collection.reduce() ;
   if (std::abs(1.-res.magnitude())<0.01)
-   { std::cout<<std::format("(checksum: {})",res.argument())<<std::endl ; }
+   { std::cout<<myformat("(checksum: {})",res.argument())<<std::endl ; }
   else
-   { std::cout<<std::format("(checksum: wrong magnitude {})",res.argument())<<std::endl ; }
+   { std::cout<<myformat("(checksum: wrong magnitude {})",res.argument())<<std::endl ; }
  }
 
 template< std::floating_point fp_t >
@@ -173,6 +176,14 @@ void main_soa( std::string execution_tname, std::size_t size, long long degree )
     ComplexesSoA<decltype(kwk::simd),fp_t> collection(kwk::simd,size) ;
     main_impl(collection,degree) ;
    }
+#ifdef __INTEL_LLVM_COMPILER
+  else if (execution_tname=="sycl")
+   {
+    static kwk::sycl::context context{::sycl::gpu_selector_v} ;
+    ComplexesSoA<decltype(context),fp_t> collection(context,size) ;
+    main_impl(collection,degree) ;
+   }
+#endif
   else throw "unknown execution_tname" ;
  }
 

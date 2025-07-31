@@ -28,9 +28,9 @@ void main_impl( std::size_t size, long long degree )
   collection.pow(degree) ;
   auto res = collection.reduce() ;
   if (std::abs(1.-res.magnitude())<0.01)
-   { std::cout<<std::format("(checksum: {})",res.argument())<<std::endl ; }
+   { std::cout<<myformat("(checksum: {})",res.argument())<<std::endl ; }
   else
-   { std::cout<<std::format("(checksum: wrong magnitude {})",res.argument())<<std::endl ; }
+   { std::cout<<myformat("(checksum: wrong magnitude {})",res.argument())<<std::endl ; }
  }
 
 template< typename fp_t>

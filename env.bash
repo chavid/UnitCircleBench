@@ -28,8 +28,10 @@ mkdir -p ${UNIT_BUILD}
 
 dev-gcc () { ${UNIT_BIN}/run-with-docker.bash chavid/dev-gcc:15.1.0-bookworm $* ; }
 dev-clang () { ${UNIT_BIN}/run-with-docker.bash chavid/dev-clang:20-bookworm $* ; }
+dev-icpx () { ${UNIT_BIN}/run-with-docker.bash chavid/dev-icpx:2025.2-bookworm $* ; }
 eve-gcc () { ${UNIT_BIN}/run-with-docker.bash chavid/eve-gcc:15.1.0-bookworm $* ; }
 kwk-gcc () { ${UNIT_BIN}/run-with-docker.bash chavid/kiwaku-gcc:15.1.0-bookworm $* ; }
 kwk-clang () { ${UNIT_BIN}/run-with-docker.bash chavid/kiwaku-clang:20-bookworm $* ; }
-export -f dev-gcc dev-clang eve-gcc kwk-gcc kwk-clang
+kwk-icpx () { ${UNIT_BIN}/run-with-docker.bash chavid/kiwaku-icpx:2025.2-bookworm $* ; }
+export -f dev-gcc dev-clang dev-icpx eve-gcc kwk-gcc kwk-clang kwk-icpx
 

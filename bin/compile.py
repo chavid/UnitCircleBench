@@ -45,6 +45,10 @@ elif CPP_COMPILER=="clang++":
   CPP_OPTIONS = "-g -march=native -mtune=native -funroll-loops -Wall -Wextra -Wfatal-errors -stdlib=libc++ -lpthread -ltbb"
   compile_cmd = "rm -f {unit_build}/{radix}.exe && clang++ -std={cpp} -{opt} {cpp_options} {unit_src}/{radix}.cpp -o {unit_build}/{radix}.exe".format(
     cpp_options=CPP_OPTIONS,unit_src=UNIT_SRC,unit_build=UNIT_BUILD,radix=FILE_RADIX,cpp=CPP_LEVEL,opt=OPT_LEVEL)
+elif CPP_COMPILER=="icpx":
+  CPP_OPTIONS = "-g -march=native -mtune=native -funroll-loops -Wall -Wextra -Wfatal-errors -fno-fast-math -fsycl -fsycl-targets=spir64,nvptx64-nvidia-cuda -lfmt"
+  compile_cmd = "rm -f {unit_build}/{radix}.exe && icpx -std={cpp} -{opt} {cpp_options} {unit_src}/{radix}.cpp -o {unit_build}/{radix}.exe".format(
+    cpp_options=CPP_OPTIONS,unit_src=UNIT_SRC,unit_build=UNIT_BUILD,radix=FILE_RADIX,cpp=CPP_LEVEL,opt=OPT_LEVEL)
 else:
   print('Unknown compiler:',CPP_CPMPILER)
   exit(1)
