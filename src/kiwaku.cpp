@@ -30,15 +30,14 @@ void init_random_aos( auto && collection )
    { elem = make_random_unit_complex<fp_type>() ; }
  }
 
-template< std::floating_point fp_t >
-void ax_aos( Complex<fp_t> const * a, Complex<fp_t> * x, std::size_t size, long long repeat )
+template< typename Context, kwk::concepts::view V >
+void ax_aos
+ ( Context & context, V & av, V & xv, long long repeat )
  {
-  for ( long long d = 0 ; d<repeat ; ++d )
+  for ( long long d=0 ; d<repeat ; ++d )
    {
-    for ( std::size_t i = 0 ; i<size ; ++i )
-     {
-      x[i] *= a[i] ;
-     }
+    kwk::transform(context,[](auto a, auto x)
+     { return a*x ; },xv,av,xv) ;
    }
  }
 
@@ -53,19 +52,23 @@ auto reduce_aos( auto && collection )
   return res ;
  }
 
-template< std::floating_point fp_t >
+template< typename Context, std::floating_point fp_t >
 class ComplexesAoS : public std::vector<Complex<fp_t>>
  {
   public :
-    ComplexesAoS( std::size_t a_size ) : std::vector<Complex<fp_t>>(a_size)
+    ComplexesAoS( Context & context, std::size_t a_size ) : std::vector<Complex<fp_t>>(a_size), m_context(context)
      { init_random_aos(*this) ; }
     void pow( long long degree )
      {
-      std::vector<Complex<fp_t>> a{*this} ;
-      ax_aos(a.data(),this->data(),this->size(),degree-1) ;
+      std::vector<Complex<fp_t>> as{*this} ;
+      auto av = kwk::view{ kwk::source = as.data(), kwk::of_size(as.size()) } ;
+      auto xv = kwk::view{ kwk::source = this->data(), kwk::of_size(this->size()) } ;
+      ax_aos(m_context,av,xv,degree-1) ;
      }
     Complex<fp_t> reduce() const
      { return reduce_aos(*this) ; }
+  private :
+    Context & m_context ;
  } ;
 
 
@@ -152,14 +155,22 @@ void main_aos( std::string execution_tname, std::size_t size, long long degree )
  {
   if (execution_tname=="cpu")
    {
-    ComplexesAoS<fp_t> collection(size) ;
+    ComplexesAoS<decltype(kwk::cpu),fp_t> collection(kwk::cpu,size) ;
     main_impl(collection,degree) ;
    }
   else if (execution_tname=="simd")
    {
-    ComplexesAoS<fp_t> collection(size) ;
+    ComplexesAoS<decltype(kwk::simd),fp_t> collection(kwk::simd,size) ;
     main_impl(collection,degree) ;
    }
+#ifdef __INTEL_LLVM_COMPILER
+  else if (execution_tname=="sycl")
+   {
+    static kwk::sycl::context context{::sycl::gpu_selector_v} ;
+    ComplexesAoS<decltype(context),fp_t> collection(context,size) ;
+    main_impl(collection,degree) ;
+   }
+#endif
   else throw "unknown execution_tname" ;
  }
 

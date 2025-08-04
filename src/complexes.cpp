@@ -12,7 +12,11 @@
 #include <vector>
 #include <list>
 #include <array>
-#include <stdfloat>
+#ifdef __GNUC__
+#  ifndef __clang__
+#    include <stdfloat>
+#  endif
+#endif
 //#include <numbers>
 //#include <cmath>
 
@@ -69,20 +73,28 @@ int main( int argc, char * argv[] )
   
   if (arrangement_tname=="aos")
    {
-    if (fp_tname=="half") time("main",main_aos<std::float16_t>,collection_tname,size,degree) ;
-    else if (fp_tname=="float") time("main",main_aos<float>,collection_tname,size,degree) ;
-    else if (fp_tname=="double") time("main",main_aos<double>,collection_tname,size,degree) ;
-    else if (fp_tname=="long") time("main",main_aos<long double>,collection_tname,size,degree) ;
-    //else if (fp_tname=="quad") time("main",main_aos<std::float128_t>,collection_tname,size,degree) ;
+       if (fp_tname=="float") time("main",main_aos<float>,collection_tname,size,degree) ;
+       else if (fp_tname=="double") time("main",main_aos<double>,collection_tname,size,degree) ;
+       else if (fp_tname=="long") time("main",main_aos<long double>,collection_tname,size,degree) ;
+#ifdef __GNUC__
+#  ifndef __clang__
+       else if (fp_tname=="half") time("main",main_aos<std::float16_t>,collection_tname,size,degree) ;
+       else if (fp_tname=="quad") time("main",main_aos<std::float128_t>,collection_tname,size,degree) ;
+#  endif
+#endif
     else throw "unknown precision" ;
    }
   else if (arrangement_tname=="soa")
    {
-    if (fp_tname=="half") time("main",main_soa<std::float16_t>,collection_tname,size,degree) ;
-    else if (fp_tname=="float") time("main",main_soa<float>,collection_tname,size,degree) ;
+    if (fp_tname=="float") time("main",main_soa<float>,collection_tname,size,degree) ;
     else if (fp_tname=="double") time("main",main_soa<double>,collection_tname,size,degree) ;
     else if (fp_tname=="long") time("main",main_soa<long double>,collection_tname,size,degree) ;
-    //else if (fp_tname=="quad") time("main",main_soa<std::float128_t>,collection_tname,size,degree) ;
+#ifdef __GNUC__
+#  ifndef __clang__
+    else if (fp_tname=="half") time("main",main_soa<std::float16_t>,collection_tname,size,degree) ;
+    else if (fp_tname=="quad") time("main",main_soa<std::float128_t>,collection_tname,size,degree) ;
+#  endif
+#endif
     else throw "unknown precision" ;
    }
   else throw "unknown arrangement_tname" ;
