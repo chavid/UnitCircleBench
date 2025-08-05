@@ -24,11 +24,13 @@
 ## kiwaku sycl
 
 echo
-kwk-icpx compile.py icpx c++23 O3 kiwaku-sycl
+#kwk-icpx compile.py icpx c++23 O3 kiwaku-sycl
+
 #kwk-icpx run-with-times.py x11 kiwaku cpu soa double 1024 1000000
-#kwk-icpx run-with-times.py x11 kiwaku simd soa double 1024 1000000
+kwk-icpx run-with-times.py x11 kiwaku cpu soa double 1024 1000000
+
 kwk-icpx run-with-times.py x11 kiwaku-sycl aos double 1024 1000
-kwk-icpx run-with-times.py x11 kiwaku-sycl soa double 1024 1000
+#kwk-icpx run-with-times.py x11 kiwaku-sycl soa double 1024 1000
 
 ## End
 

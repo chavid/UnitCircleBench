@@ -34,7 +34,6 @@ class ComplexesAoS : public std::vector<Complex<FloatingPoint>>
     void pow
      ( long long degree )
      {
-      auto before = time_before() ;
       auto cs0{*this} ;
       auto cv0 = kwk::view{ kwk::source = cs0.data(), kwk::of_size(cs0.size()) } ;
       auto cv = kwk::view{ kwk::source = this->data(), kwk::of_size(this->size()) } ;
@@ -42,10 +41,9 @@ class ComplexesAoS : public std::vector<Complex<FloatingPoint>>
       kwk::transform(m_context,[repeat](auto c, auto c0)
        {
         for ( long long r=0 ; r<repeat ; ++r )
-         { c*= c0 ;  }
+         { c*= c0 ; }
         return c ;
        },cv,cv,cv0) ;
-      time_after(before,"pow") ;
      }
     Complex<FloatingPoint> reduce() const
      {
@@ -74,25 +72,35 @@ class ComplexesSoA
      }  
     void pow( long long degree )
      {
-      auto before = time_before() ;
+
       std::vector<FloatingPoint> tmp(m_size), rs0{m_rs}, is0{m_is} ;
       auto tmpv = kwk::view{ kwk::source = tmp.data(), kwk::of_size(m_size) } ;
       auto xrv = kwk::view{ kwk::source = m_rs.data(), kwk::of_size(m_size) } ;
       auto xiv = kwk::view{ kwk::source = m_is.data(), kwk::of_size(m_size) } ;
       auto xrv0 = kwk::view{ kwk::source = rs0.data(), kwk::of_size(m_size) } ;
       auto xiv0 = kwk::view{ kwk::source = is0.data(), kwk::of_size(m_size) } ;
+      
+       {
+      auto tmpp = m_context.inout(tmpv);
+      auto xrp  = m_context.inout(xrv);
+      auto xip  = m_context.inout(xiv);
+      auto xrp0 = m_context.in(xrv0);
+      auto xip0 = m_context.in(xiv0);
+    
       long long repeat = degree-1 ;
       for ( long long r = 0 ; r <repeat ; ++r )
        {
-        kwk::transform(m_context,[](auto xr, auto xi, auto xr0, auto xi0)
+        kwk::transform_proxy(m_context,[](auto xr, auto xi, auto xr0, auto xi0)
          { return xr*xr0 - xi*xi0 ; }
-         ,tmpv,xrv,xiv,xrv0,xiv0) ;
-        kwk::transform(m_context,[](auto xr, auto xi, auto xr0, auto xi0)
+         ,tmpp,xrp,xip,xrp0,xip0) ;
+        kwk::transform_inplace_proxy(m_context,[](auto xi, auto xr, auto xr0, auto xi0)
          { return xi*xr0 + xr*xi0 ; }
-         ,xiv,xrv,xiv,xrv0,xiv0) ;
-        kwk::copy(m_context,xrv,tmpv) ;
+         ,xip,xrp,xrp0,xip0) ;
+        kwk::copy_proxy(m_context,xrp,tmpp) ;
        }
-      time_after(before,"pow") ;
+
+       }
+
     }
     auto reduce() const
      {
@@ -112,55 +120,68 @@ class ComplexesSoA
 // Main
 //================================================================
 
-template< typename Collection >
-void main_impl( Collection & collection, long long degree )
+template< template <typename, typename> typename Container, typename FloatingPoint >
+void main_final
+ ( std::size_t size, long long degree,
+   auto & selector )
  {
-  collection.pow(degree) ;
-  auto res = collection.reduce() ;
+  kwk::sycl::context context{selector} ;
+  Container<decltype(context),FloatingPoint> cs(context,size) ;
+  cs.pow(degree) ;
+  auto res = cs.reduce() ;
   if (std::abs(1.-res.magnitude())<0.01)
    { std::cout<<myformat("(checksum: {})",res.argument())<<std::endl ; }
   else
    { std::cout<<myformat("(checksum: wrong magnitude {})",res.argument())<<std::endl ; }
  }
 
-template< std::floating_point fp_t >
-void main_aos( std::size_t size, long long degree )
+template< template <typename, typename> typename Container >
+void main_fp
+ ( std::string const & fp_name,
+   std::size_t size, long long degree,
+   auto & selector )
  {
-  kwk::sycl::context context{::sycl::gpu_selector_v} ;
-  ComplexesAoS<decltype(context),fp_t> cs(context,size) ;
-  main_impl(cs,degree) ;
+  if (fp_name=="float")
+   { main_final<Container,float>(size,degree,selector) ; }
+  else if (fp_name=="double")
+   { main_final<Container,double>(size,degree,selector) ; }
+  else throw "unknown floating point name" ;
  }
 
-template< std::floating_point fp_t >
-void main_soa( std::size_t size, long long degree )
+void main_arr
+ ( std::string const & arr_name,
+   std::string const & fp_name,
+   std::size_t size, long long degree,
+   auto & selector )
  {
-  kwk::sycl::context context{::sycl::gpu_selector_v} ;
-  ComplexesSoA<decltype(context),fp_t> cs(context,size) ;
-  main_impl(cs,degree) ;
+  if (arr_name=="aos")
+   { main_fp<ComplexesAoS>(fp_name,size,degree,selector) ; }
+  else if (arr_name=="soa")
+   { main_fp<ComplexesSoA>(fp_name,size,degree,selector) ; }
+  else throw "unknown arrangement name" ;
+ }
+
+void main_dt
+ ( std::string const & dt_name,
+   std::string const & arr_name,
+   std::string const & fp_name,
+   std::size_t size, long long degree )
+ {
+  if (dt_name=="cpu")
+   { main_arr(arr_name,fp_name,size,degree,::sycl::cpu_selector_v) ; }
+  else if (dt_name=="gpu")
+   { main_arr(arr_name,fp_name,size,degree,::sycl::gpu_selector_v) ; }
+  else throw "unknown device type name" ;
  }
 
 int main( int argc, char * argv[] )
  {
-  assert(argc==5) ;
-  std::string arrangement_tname(argv[1]) ;
-  std::string fp_tname(argv[2]) ;
-  std::size_t size = {std::strtoull(argv[3],nullptr,10)} ;
-  long long degree = {std::strtoll(argv[4],nullptr,10)} ;
+  assert(argc==6) ;
+  std::string device_type_name(argv[1]) ;
+  std::string arrangement_name(argv[2]) ;
+  std::string fp_name(argv[3]) ;
+  std::size_t size = {std::strtoull(argv[4],nullptr,10)} ;
+  long long degree = {std::strtoll(argv[5],nullptr,10)} ;
   srand(1) ;
-  
-  if (arrangement_tname=="aos")
-   {
-    if (fp_tname=="float") time("main",main_aos<float>,size,degree) ;
-    else if (fp_tname=="double") time("main",main_aos<double>,size,degree) ;
-    else throw "unknown precision" ;
-   }
-  else if (arrangement_tname=="soa")
-   {
-    if (fp_tname=="float")
-     { time("main",main_soa<float>,size,degree) ; }
-    else if (fp_tname=="double")
-     { time("main",main_soa<double>,size,degree) ; }
-    else throw "unknown precision" ;
-   }
-  else throw "unknown arrangement_tname" ;
+  main_dt(device_type_name,arrangement_name,fp_name,size,degree) ;
  }
