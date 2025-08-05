@@ -23,3 +23,11 @@ Mais pas sur les complexes :
    quoi elles pointent me semble problematique. Et je
    n'ai pas trouvé de methode complementaire permettant
    une semantique de valeur... OK, il y a un algo de copie.
+
+## Programme et resultats kiwaku-sycl
+
+kiwaku-sycl cpu aos double 1024 10000 : real 0.800 s, user  0.330 s, sys 0.560 s, checksum: 0.8115612022238222
+kiwaku-sycl cpu soa double 1024 10000 : real 2.590 s, user 65.810 s, sys 9.580 s, checksum: 0.8115612022238222
+kiwaku-sycl gpu aos double 1024 10000 : real 0.530 s, user  0.090 s, sys 0.420 s, checksum: 0.8115612022238222
+kiwaku-sycl gpu soa double 1024 10000 : real 1.090 s, user  0.580 s, sys 0.490 s, checksum: 0.8115612022238222
+

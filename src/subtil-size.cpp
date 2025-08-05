@@ -103,33 +103,33 @@ void main_impl( std::size_t size, long long degree )
  }
 
 template< typename fp_t>
-void main_soa( std::string & collection_tname, std::size_t size, long long degree )
+void main_soa( std::string & collection_name, std::size_t size, long long degree )
  {
-  if (collection_tname=="c1") main_impl<Complexes1<fp_t>>(size,degree) ;
-  else if (collection_tname=="c2") main_impl<Complexes2<fp_t>>(size,degree) ;
-  else throw "unknown collection_tname" ;
+  if (collection_name=="c1") main_impl<Complexes1<fp_t>>(size,degree) ;
+  else if (collection_name=="c2") main_impl<Complexes2<fp_t>>(size,degree) ;
+  else throw "unknown collection_name" ;
  }
 
 int main( int argc, char * argv[] )
  {
   assert(argc==5) ;
-  std::string collection_tname(argv[1]) ;
-  std::string fp_tname(argv[2]) ;
+  std::string collection_name(argv[1]) ;
+  std::string fp_name(argv[2]) ;
   std::size_t size = {std::strtoull(argv[3],nullptr,10)} ;
   long long degree = {std::strtoll(argv[4],nullptr,10)} ;
   srand(1) ;
   
-  if (collection_tname=="c1")
+  if (collection_name=="c1")
    {
-    if (fp_tname=="float") time("main",main_soa<float>,collection_tname,size,degree) ;
-    else if (fp_tname=="double") time("main",main_soa<double>,collection_tname,size,degree) ;
+    if (fp_name=="float") time("main",main_soa<float>,collection_name,size,degree) ;
+    else if (fp_name=="double") time("main",main_soa<double>,collection_name,size,degree) ;
     else throw "unknown precision" ;
    }
-  else if (collection_tname=="c2")
+  else if (collection_name=="c2")
    {
-    if (fp_tname=="float") time("main",main_soa<float>,collection_tname,size,degree) ;
-    else if (fp_tname=="double") time("main",main_soa<double>,collection_tname,size,degree) ;
+    if (fp_name=="float") time("main",main_soa<float>,collection_name,size,degree) ;
+    else if (fp_name=="double") time("main",main_soa<double>,collection_name,size,degree) ;
     else throw "unknown precision" ;
    }
-  else throw "unknown arrangement_tname" ;
+  else throw "unknown arrangement_name" ;
  }

@@ -72,36 +72,31 @@ class ComplexesSoA
      }  
     void pow( long long degree )
      {
-
       std::vector<FloatingPoint> tmp(m_size), rs0{m_rs}, is0{m_is} ;
-      auto tmpv = kwk::view{ kwk::source = tmp.data(), kwk::of_size(m_size) } ;
-      auto xrv = kwk::view{ kwk::source = m_rs.data(), kwk::of_size(m_size) } ;
-      auto xiv = kwk::view{ kwk::source = m_is.data(), kwk::of_size(m_size) } ;
-      auto xrv0 = kwk::view{ kwk::source = rs0.data(), kwk::of_size(m_size) } ;
-      auto xiv0 = kwk::view{ kwk::source = is0.data(), kwk::of_size(m_size) } ;
+      auto tmpv = kwk::view{ kwk::source =  tmp.data(), kwk::of_size(m_size) } ;
+      auto rv =   kwk::view{ kwk::source = m_rs.data(), kwk::of_size(m_size) } ;
+      auto iv =   kwk::view{ kwk::source = m_is.data(), kwk::of_size(m_size) } ;
+      auto rv0 =  kwk::view{ kwk::source =  rs0.data(), kwk::of_size(m_size) } ;
+      auto iv0 =  kwk::view{ kwk::source =  is0.data(), kwk::of_size(m_size) } ;
       
-       {
       auto tmpp = m_context.inout(tmpv);
-      auto xrp  = m_context.inout(xrv);
-      auto xip  = m_context.inout(xiv);
-      auto xrp0 = m_context.in(xrv0);
-      auto xip0 = m_context.in(xiv0);
+      auto rp   = m_context.inout(rv);
+      auto ip   = m_context.inout(iv);
+      auto rp0  = m_context.in(rv0);
+      auto ip0  = m_context.in(iv0);
     
       long long repeat = degree-1 ;
-      for ( long long r = 0 ; r <repeat ; ++r )
+      kwk::for_each_proxy(m_context,[repeat](auto & tmp, auto & r, auto & i, auto r0, auto i0)
        {
-        kwk::transform_proxy(m_context,[](auto xr, auto xi, auto xr0, auto xi0)
-         { return xr*xr0 - xi*xi0 ; }
-         ,tmpp,xrp,xip,xrp0,xip0) ;
-        kwk::transform_inplace_proxy(m_context,[](auto xi, auto xr, auto xr0, auto xi0)
-         { return xi*xr0 + xr*xi0 ; }
-         ,xip,xrp,xrp0,xip0) ;
-        kwk::copy_proxy(m_context,xrp,tmpp) ;
-       }
+        for ( long long rep = 0 ; rep <repeat ; ++rep )
+         {
+          tmp = r*r0 - i*i0 ;
+          i = i*r0 + r*i0 ;
+          r = tmp ;
+         }
+       },tmpp,rp,ip,rp0,ip0) ;
+     }
 
-       }
-
-    }
     auto reduce() const
      {
       Complex<FloatingPoint> acc = make_unit_complex<FloatingPoint>(1.,0.) ;
@@ -126,6 +121,7 @@ void main_final
    auto & selector )
  {
   kwk::sycl::context context{selector} ;
+  context.print_sycl_header();
   Container<decltype(context),FloatingPoint> cs(context,size) ;
   cs.pow(degree) ;
   auto res = cs.reduce() ;

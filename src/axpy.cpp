@@ -264,55 +264,55 @@ void main_impl( std::size_t size, std::size_t repeat )
  }
 
 template< std::floating_point fp_t >
-void main_aos( std::string & collection_tname, std::size_t size, std::size_t repeat )
+void main_aos( std::string & collection_name, std::size_t size, std::size_t repeat )
  {
-  if (collection_tname=="carray") main_impl<AoS<XY<fp_t>*>>(size,repeat) ;
-  else if (collection_tname=="array") main_impl<AoS<std::array<XY<fp_t>,65536>>>(size,repeat) ;
-  else if (collection_tname=="dynarray") main_impl<AoS<DynArray<XY<fp_t>>>>(size,repeat) ;
-  else if (collection_tname=="valarray") main_impl<AoS<std::valarray<XY<fp_t>>>>(size,repeat) ;
-  else if (collection_tname=="vector") main_impl<AoS<std::vector<XY<fp_t>>>>(size,repeat) ;
-  else if (collection_tname=="list") main_impl<AoS<std::list<XY<fp_t>>>>(size,repeat) ;
-  else throw "unknown collection_tname" ;
+  if (collection_name=="carray") main_impl<AoS<XY<fp_t>*>>(size,repeat) ;
+  else if (collection_name=="array") main_impl<AoS<std::array<XY<fp_t>,65536>>>(size,repeat) ;
+  else if (collection_name=="dynarray") main_impl<AoS<DynArray<XY<fp_t>>>>(size,repeat) ;
+  else if (collection_name=="valarray") main_impl<AoS<std::valarray<XY<fp_t>>>>(size,repeat) ;
+  else if (collection_name=="vector") main_impl<AoS<std::vector<XY<fp_t>>>>(size,repeat) ;
+  else if (collection_name=="list") main_impl<AoS<std::list<XY<fp_t>>>>(size,repeat) ;
+  else throw "unknown collection_name" ;
  }
 
 template< std::floating_point fp_t >
-void main_soa( std::string & collection_tname, std::size_t size, std::size_t repeat )
+void main_soa( std::string & collection_name, std::size_t size, std::size_t repeat )
  {
-  if (collection_tname=="carray") main_impl<SoA<fp_t *>>(size,repeat) ;
-  else if (collection_tname=="array") main_impl<SoA<std::array<fp_t,65536>>>(size,repeat) ;
-  else if (collection_tname=="dynarray") main_impl<SoA<DynArray<fp_t>>>(size,repeat) ;
-  else if (collection_tname=="valarray") main_impl<SoA<std::valarray<fp_t>>>(size,repeat) ;
-  else if (collection_tname=="vector") main_impl<SoA<std::vector<fp_t>>>(size,repeat) ;
-  else if (collection_tname=="list") main_impl<SoA<std::list<fp_t>>>(size,repeat) ;
-  else throw "unknown collection_tname" ;
+  if (collection_name=="carray") main_impl<SoA<fp_t *>>(size,repeat) ;
+  else if (collection_name=="array") main_impl<SoA<std::array<fp_t,65536>>>(size,repeat) ;
+  else if (collection_name=="dynarray") main_impl<SoA<DynArray<fp_t>>>(size,repeat) ;
+  else if (collection_name=="valarray") main_impl<SoA<std::valarray<fp_t>>>(size,repeat) ;
+  else if (collection_name=="vector") main_impl<SoA<std::vector<fp_t>>>(size,repeat) ;
+  else if (collection_name=="list") main_impl<SoA<std::list<fp_t>>>(size,repeat) ;
+  else throw "unknown collection_name" ;
  }
 
 int main( int argc, char * argv[] )
  {
   assert(argc==6) ;
-  std::string arrangement_tname(argv[1]) ;
-  std::string collection_tname(argv[2]) ;
-  std::string fp_tname(argv[3]) ;
+  std::string arrangement_name(argv[1]) ;
+  std::string collection_name(argv[2]) ;
+  std::string fp_name(argv[3]) ;
   std::size_t size {std::strtoull(argv[4],nullptr,10)} ;
   std::size_t repeat {std::strtoull(argv[5],nullptr,10)} ;
 
-  if (arrangement_tname=="aos")
+  if (arrangement_name=="aos")
    {
-    if (fp_tname=="half") main_aos<std::float16_t>(collection_tname,size,repeat) ;
-    else if (fp_tname=="float") main_aos<float>(collection_tname,size,repeat) ;
-    else if (fp_tname=="double") main_aos<double>(collection_tname,size,repeat) ;
-    else if (fp_tname=="long") main_aos<long double>(collection_tname,size,repeat) ;
-    else if (fp_tname=="quad") main_aos<std::float128_t>(collection_tname,size,repeat) ;
-    else throw "unknown fp_tname" ;
+    if (fp_name=="half") main_aos<std::float16_t>(collection_name,size,repeat) ;
+    else if (fp_name=="float") main_aos<float>(collection_name,size,repeat) ;
+    else if (fp_name=="double") main_aos<double>(collection_name,size,repeat) ;
+    else if (fp_name=="long") main_aos<long double>(collection_name,size,repeat) ;
+    else if (fp_name=="quad") main_aos<std::float128_t>(collection_name,size,repeat) ;
+    else throw "unknown fp_name" ;
    }
-  else if (arrangement_tname=="soa")
+  else if (arrangement_name=="soa")
    {
-    if (fp_tname=="half") main_soa<std::float16_t>(collection_tname,size,repeat) ;
-    else if (fp_tname=="float") main_soa<float>(collection_tname,size,repeat) ;
-    else if (fp_tname=="double") main_soa<double>(collection_tname,size,repeat) ;
-    else if (fp_tname=="long") main_soa<long double>(collection_tname,size,repeat) ;
-    else if (fp_tname=="quad") main_soa<std::float128_t>(collection_tname,size,repeat) ;
-    else throw "unknown fp_tname" ;
+    if (fp_name=="half") main_soa<std::float16_t>(collection_name,size,repeat) ;
+    else if (fp_name=="float") main_soa<float>(collection_name,size,repeat) ;
+    else if (fp_name=="double") main_soa<double>(collection_name,size,repeat) ;
+    else if (fp_name=="long") main_soa<long double>(collection_name,size,repeat) ;
+    else if (fp_name=="quad") main_soa<std::float128_t>(collection_name,size,repeat) ;
+    else throw "unknown fp_name" ;
    }
-  else throw "unknown arrangement_tname" ;
+  else throw "unknown arrangement_name" ;
  }

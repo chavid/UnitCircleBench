@@ -205,33 +205,33 @@ void main_impl( std::size_t size, long long degree )
  }
 
 template< std::floating_point fp_t >
-void main_fp( std::string const & implem_tname, std::size_t size, long long degree )
+void main_fp( std::string const & implem_name, std::size_t size, long long degree )
  {
-  if (implem_tname=="raw")
+  if (implem_name=="raw")
    { main_impl<ComplexesRaw<fp_t>>(size,degree) ; }
-  else if (implem_tname=="simd")
+  else if (implem_name=="simd")
    { main_impl<ComplexesSimd<fp_t>>(size,degree) ; }
-  else if (implem_tname=="wide")
+  else if (implem_name=="wide")
    { main_impl<ComplexesWide<fp_t>>(size,degree) ; }
-  else if (implem_tname=="transform")
+  else if (implem_name=="transform")
    { main_impl<ComplexesTransform<fp_t>>(size,degree) ; }
-  else throw "unknown implem_tname" ;
+  else throw "unknown implem_name" ;
  }
 
 int main( int argc, char * argv[] )
  {
   assert(argc==5) ;
-  std::string implem_tname(argv[1]) ;
-  std::string fp_tname(argv[2]) ;
+  std::string implem_name(argv[1]) ;
+  std::string fp_name(argv[2]) ;
   std::size_t size = {std::strtoull(argv[3],nullptr,10)} ;
   long long degree = {std::strtoll(argv[4],nullptr,10)} ;
   srand(1) ;
 
   //std::cout << eve::current_api << "\n";
 
-  if (fp_tname=="float")
-   { time("main",main_fp<float>,implem_tname,size,degree) ; }
-  else if (fp_tname=="double")
-   { time("main",main_fp<double>,implem_tname,size,degree) ; }
+  if (fp_name=="float")
+   { time("main",main_fp<float>,implem_name,size,degree) ; }
+  else if (fp_name=="double")
+   { time("main",main_fp<double>,implem_name,size,degree) ; }
   else throw "unknown precision" ;
  }

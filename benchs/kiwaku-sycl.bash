@@ -18,11 +18,11 @@
 echo
 kwk-icpx compile.py icpx c++23 O3 kiwaku-sycl
 
-kwk-icpx run-with-times.py x11 kiwaku-sycl cpu aos double 1024 10000
-kwk-icpx run-with-times.py x11 kiwaku-sycl cpu soa double 1024 10000
+kwk-icpx run-with-times.py x11 kiwaku-sycl cpu aos double 1024 10000000
+kwk-icpx run-with-times.py x11 kiwaku-sycl cpu soa double 1024 10000000
 
-kwk-icpx run-with-times.py x11 kiwaku-sycl gpu aos double 1024 10000
-kwk-icpx run-with-times.py x11 kiwaku-sycl gpu soa double 1024 10000
+kwk-icpx run-with-times.py x11 kiwaku-sycl gpu aos double 1024 10000000
+kwk-icpx run-with-times.py x11 kiwaku-sycl gpu soa double 1024 10000000
 
 ## End
 
