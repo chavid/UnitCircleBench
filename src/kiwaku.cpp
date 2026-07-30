@@ -151,76 +151,76 @@ void main_impl( Collection & collection, long long degree )
  }
 
 template< std::floating_point fp_t >
-void main_aos( std::string execution_name, std::size_t size, long long degree )
+void main_aos( std::string execution_tname, std::size_t size, long long degree )
  {
-  if (execution_name=="cpu")
+  if (execution_tname=="cpu")
    {
     ComplexesAoS<decltype(kwk::cpu),fp_t> collection(kwk::cpu,size) ;
     main_impl(collection,degree) ;
    }
-  else if (execution_name=="simd")
+  else if (execution_tname=="simd")
    {
     ComplexesAoS<decltype(kwk::simd),fp_t> collection(kwk::simd,size) ;
     main_impl(collection,degree) ;
    }
 #ifdef __INTEL_LLVM_COMPILER
-  else if (execution_name=="sycl")
+  else if (execution_tname=="sycl")
    {
     static kwk::sycl::context context{::sycl::gpu_selector_v} ;
     ComplexesAoS<decltype(context),fp_t> collection(context,size) ;
     main_impl(collection,degree) ;
    }
 #endif
-  else throw "unknown execution_name" ;
+  else throw "unknown execution_tname" ;
  }
 
 template< std::floating_point fp_t >
-void main_soa( std::string execution_name, std::size_t size, long long degree )
+void main_soa( std::string execution_tname, std::size_t size, long long degree )
  {
-  if (execution_name=="cpu")
+  if (execution_tname=="cpu")
    {
     ComplexesSoA<decltype(kwk::cpu),fp_t> collection(kwk::cpu,size) ;
     main_impl(collection,degree) ;
    }
-  else if (execution_name=="simd")
+  else if (execution_tname=="simd")
    {
     ComplexesSoA<decltype(kwk::simd),fp_t> collection(kwk::simd,size) ;
     main_impl(collection,degree) ;
    }
 #ifdef __INTEL_LLVM_COMPILER
-  else if (execution_name=="sycl")
+  else if (execution_tname=="sycl")
    {
     static kwk::sycl::context context{::sycl::gpu_selector_v} ;
     ComplexesSoA<decltype(context),fp_t> collection(context,size) ;
     main_impl(collection,degree) ;
    }
 #endif
-  else throw "unknown execution_name" ;
+  else throw "unknown execution_tname" ;
  }
 
 int main( int argc, char * argv[] )
  {
   assert(argc==6) ;
-  std::string execution_name(argv[1]) ;
-  std::string arrangement_name(argv[2]) ;
-  std::string fp_name(argv[3]) ;
+  std::string execution_tname(argv[1]) ;
+  std::string arrangement_tname(argv[2]) ;
+  std::string fp_tname(argv[3]) ;
   std::size_t size = {std::strtoull(argv[4],nullptr,10)} ;
   long long degree = {std::strtoll(argv[5],nullptr,10)} ;
   srand(1) ;
   
-  if (arrangement_name=="aos")
+  if (arrangement_tname=="aos")
    {
-    if (fp_name=="float") time("main",main_aos<float>,execution_name,size,degree) ;
-    else if (fp_name=="double") time("main",main_aos<double>,execution_name,size,degree) ;
+    if (fp_tname=="float") time("main",main_aos<float>,execution_tname,size,degree) ;
+    else if (fp_tname=="double") time("main",main_aos<double>,execution_tname,size,degree) ;
     else throw "unknown precision" ;
    }
-  else if (arrangement_name=="soa")
+  else if (arrangement_tname=="soa")
    {
-    if (fp_name=="float")
-     { time("main",main_soa<float>,execution_name,size,degree) ; }
-    else if (fp_name=="double")
-     { time("main",main_soa<double>,execution_name,size,degree) ; }
+    if (fp_tname=="float")
+     { time("main",main_soa<float>,execution_tname,size,degree) ; }
+    else if (fp_tname=="double")
+     { time("main",main_soa<double>,execution_tname,size,degree) ; }
     else throw "unknown precision" ;
    }
-  else throw "unknown arrangement_name" ;
+  else throw "unknown arrangement_tname" ;
  }

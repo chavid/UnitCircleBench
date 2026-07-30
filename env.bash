@@ -20,18 +20,19 @@ if [[ ":${PATH}:" != *":${UNIT_BIN}:"* ]]; then
     export PATH="${UNIT_BIN}:${PATH}"
 fi
 
-# ensure the presence of build
+# ensure the presence of build directory
 
 mkdir -p ${UNIT_BUILD}
 
-# exportable aliases
+# rather than usual shell aliases, we prefer
+# functions which can be exported
 
 dev-gcc () { ${UNIT_BIN}/run-with-docker.bash chavid/dev-gcc:15.1.0-bookworm $* ; }
 dev-clang () { ${UNIT_BIN}/run-with-docker.bash chavid/dev-clang:20-bookworm $* ; }
-dev-icpx () { ${UNIT_BIN}/run-with-docker-gpu.bash chavid/dev-icpx:2025.2-bookworm $* ; }
+dev-icpx () { ${UNIT_BIN}/run-with-docker.bash chavid/dev-icpx:2025.2-bookworm $* ; }
 eve-gcc () { ${UNIT_BIN}/run-with-docker.bash chavid/eve-gcc:15.1.0-bookworm $* ; }
 kwk-gcc () { ${UNIT_BIN}/run-with-docker.bash chavid/kiwaku-gcc:15.1.0-bookworm $* ; }
 kwk-clang () { ${UNIT_BIN}/run-with-docker.bash chavid/kiwaku-clang:20-bookworm $* ; }
-kwk-icpx () { ${UNIT_BIN}/run-with-docker-gpu.bash chavid/kiwaku-icpx:2025.2-bookworm $* ; }
+kwk-icpx () { ${UNIT_BIN}/run-with-docker.bash chavid/kiwaku-icpx:2025.2-bookworm $* ; }
 export -f dev-gcc dev-clang dev-icpx eve-gcc kwk-gcc kwk-clang kwk-icpx
 
